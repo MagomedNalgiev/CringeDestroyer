@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cringe Destroyer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    textarea, input[type="url"] {
+      width: 100%;
+      max-width: 500px;
+      padding: 1rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+    }
+    button {
+      background: red;
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: darkred;
+    }
+    #output {
+      margin-top: 2rem;
+      font-size: 1.5rem;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .destroyed {
+      animation: explode 0.8s forwards;
+    }
+    @keyframes explode {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(3) rotate(720deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Уничтожь Кринж</h1>
+  <textarea id="cringeText" placeholder="Вставь сюда кринжовый текст..." rows="4"></textarea>
+  <input type="url" id="cringeLink" placeholder="...или вставь ссылку">
+  <input type="file" id="cringeImage" accept="image/*">
+  <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
+  <div id="output"></div>
+
+  <script>
+    function destroyCringe() {
+      const text = document.getElementById('cringeText').value;
+      const link = document.getElementById('cringeLink').value;
+      const imageInput = document.getElementById('cringeImage');
+      const output = document.getElementById('output');
+      output.innerHTML = '';
+      output.style.opacity = 0;
+
+      if (text) {
+        const el = document.createElement('div');
+        el.textContent = text;
+        el.classList.add('destroyed');
+        output.appendChild(el);
+      } else if (link) {
+        const el = document.createElement('a');
+        el.href = link;
+        el.textContent = link;
+        el.target = '_blank';
+        el.classList.add('destroyed');
+        output.appendChild(el);
+      } else if (imageInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.style.maxWidth = '300px';
+          img.classList.add('destroyed');
+          output.appendChild(img);
+        }
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        alert('Вставь что-нибудь кринжовое сначала!');
+        return;
+      }
+
+      setTimeout(() => {
+        output.style.opacity = 1;
+      }, 100);
+
+      setTimeout(() => {
+        output.innerHTML = '<p>✅ Кринж уничтожен. Ты свободен.</p>';
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
