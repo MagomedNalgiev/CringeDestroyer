@@ -303,13 +303,16 @@
       const shouldRecord = document.getElementById('recordToggle')?.checked;
       if (shouldRecord) {
         try {
-          startRecording();
+          startRecording(() => performCringeDestruction());
         } catch (e) {
-          console.warn('Ошибка записи GIF, уничтожение всё равно выполнится:', e);
+          console.warn("Ошибка записи гифки:", e);
+          performCringeDestruction();
         }
+      } else {
+        performCringeDestruction();
       }
-      performCringeDestruction();
     }
+
     
     function performCringeDestruction() {
       const textArea = document.getElementById('cringeText');
@@ -422,13 +425,16 @@
       const shouldRecord = document.getElementById('recordToggle')?.checked;
       if (shouldRecord) {
         try {
-          startRecording();
+          startRecording(() => performTotalDestruction());
         } catch (e) {
-          console.warn('Ошибка записи GIF, полный снос всё равно выполнится:', e);
+          console.warn("Ошибка записи гифки:", e);
+          performTotalDestruction();
         }
+      } else {
+        performTotalDestruction();
       }
-      performTotalDestruction();
     }
+
     
     function performTotalDestruction() {
       const blackhole = document.createElement('div');
@@ -483,7 +489,7 @@
   
   <script>
     
-    function startRecording() {
+    function startRecording(callback) {
       const duration = 2200;
       const interval = 200;
       const totalFrames = Math.floor(duration / interval);
@@ -508,6 +514,7 @@
               a.href = url;
               a.download = "cringe_destruction.gif";
               a.click();
+              if (typeof callback === 'function') callback(); // 🔧 вызов логики после записи
             });
             gif.render();
           }
@@ -516,6 +523,7 @@
     
       captureFrame();
     }
+
 
 
   </script>
