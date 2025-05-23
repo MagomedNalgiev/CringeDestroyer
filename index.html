@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cringe Destroyer</title>
   <style>
     body {
@@ -65,58 +65,69 @@
       transition: opacity 1s ease;
       position: relative;
     }
-    .destroy-all {
-      animation: destroy-all 5s forwards;
+    .explode-sad {
+      animation: explode-sad 2.5s forwards, shake 1.5s ease-in-out;
     }
-    .final-flash {
+    .explode-angry {
+      animation: explode-angry 2.5s forwards, shake 1.5s ease-in-out;
+    }
+    .explode-scared {
+      animation: explode-scared 2.5s forwards, shake 1.5s ease-in-out;
+    }
+    .explode-disgusted {
+      animation: explode-disgusted 2.5s forwards, shake 1.5s ease-in-out;
+    }
+    .flash {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: white;
+      width: 100%;
+      height: 100%;
       opacity: 0;
-      animation: finalFlashAnim 0.6s ease-in-out forwards;
-      z-index: 9999;
+      pointer-events: none;
+      z-index: 100;
     }
-    #nuke-button-wrapper {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+    .flash.sad { background: radial-gradient(#66ccff, rgba(102,204,255,0)); animation: flashEffect 0.4s ease-in-out; }
+    .flash.angry { background: radial-gradient(#ff3300, rgba(255,51,0,0)); animation: flashEffect 0.4s ease-in-out; }
+    .flash.scared { background: radial-gradient(#cc66ff, rgba(204,102,255,0)); animation: flashEffect 0.4s ease-in-out; }
+    .flash.disgusted { background: radial-gradient(#66ff66, rgba(102,255,102,0)); animation: flashEffect 0.4s ease-in-out; }
+    @keyframes explode-sad {
+      0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+      50% { transform: translateY(30px) scale(0.8); opacity: 0.5; filter: blur(2px); }
+      100% { transform: translateY(100px) scale(0.5); opacity: 0; filter: blur(5px); }
     }
-    #nuke-button, #confirm-nuke-button {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background-color: red;
-      color: white;
-      font-weight: bold;
-      border: 3px solid white;
-      font-size: 1.5rem;
+    @keyframes explode-angry {
+      0% { transform: scale(1); opacity: 1; filter: brightness(1); }
+      30% { transform: scale(1.5) rotate(10deg); filter: brightness(3) drop-shadow(0 0 10px red); }
+      70% { transform: scale(1.2) rotate(-10deg); }
+      100% { transform: scale(0); opacity: 0; filter: brightness(0); }
     }
-    #confirm-nuke-button {
-      border-radius: 8px;
-      width: auto;
-      height: auto;
-      padding: 1rem 1.5rem;
-      background: black;
-      color: lime;
-      font-size: 1rem;
-      display: none;
-      margin-top: 0.5rem;
+    @keyframes explode-scared {
+      0% { transform: scale(1); opacity: 1; }
+      25% { transform: scale(1.2) translateX(-40px); }
+      50% { transform: scale(1.5) translateX(40px); }
+      75% { transform: scale(0.8) translateX(-20px); }
+      100% { transform: scale(0); opacity: 0; }
     }
-    @keyframes destroy-all {
-      0% { transform: scale(1); opacity: 1; filter: grayscale(0); }
-      50% { transform: scale(2); filter: grayscale(1); }
-      100% { transform: scale(0); opacity: 0; filter: grayscale(1); }
+    @keyframes explode-disgusted {
+      0% { transform: rotate(0deg) scale(1); filter: hue-rotate(0deg); opacity: 1; }
+      50% { transform: rotate(180deg) scale(1.3); filter: hue-rotate(90deg) saturate(2); }
+      100% { transform: rotate(720deg) scale(0); filter: hue-rotate(180deg); opacity: 0; }
     }
-    @keyframes finalFlashAnim {
-      0% { opacity: 0; }
-      30% { opacity: 1; }
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-10px, 10px); }
+      20% { transform: translate(10px, -10px); }
+      30% { transform: translate(-10px, 10px); }
+      40% { transform: translate(10px, -10px); }
+      50% { transform: translate(-10px, 10px); }
+      60% { transform: translate(10px, -10px); }
+      70% { transform: translate(-10px, 10px); }
+      80% { transform: translate(10px, -10px); }
+      90% { transform: translate(-10px, 10px); }
+    }
+    @keyframes flashEffect {
+      0% { opacity: 1; }
       100% { opacity: 0; }
     }
   </style>
@@ -135,18 +146,8 @@
   <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
   <div id="output"></div>
   <div id="flashContainer"></div>
-  <div id="nuke-button-wrapper">
-    <button id="nuke-button" onclick="revealConfirmButton()">💣</button>
-    <button id="confirm-nuke-button" onclick="destroyEverything()">УНИЧТОЖИТЬ ВСЁ</button>
-  </div>
   <audio id="boomSound" src="boom.mp3" preload="auto"></audio>
-
   <script>
-    function revealConfirmButton() {
-      document.getElementById('nuke-button').style.display = 'none';
-      document.getElementById('confirm-nuke-button').style.display = 'block';
-    }
-
     function destroyCringe() {
       const textArea = document.getElementById('cringeText');
       const linkInput = document.getElementById('cringeLink');
@@ -156,21 +157,20 @@
       const sound = document.getElementById('boomSound');
       output.innerHTML = '';
       output.style.opacity = 0;
-    
+
       const text = textArea.value;
       const link = linkInput.value;
       const hasImage = imageInput.files.length > 0;
-    
+
       if (!text && !link && !hasImage) {
         alert('Вставь что-нибудь кринжовое сначала!');
         return;
       }
-    
-      // Эффекты и звук в зависимости от эмоции
+
       triggerFlash(emotion);
       sound.currentTime = 0;
       sound.play();
-    
+
       let message = '';
       switch (emotion) {
         case 'sad':
@@ -186,18 +186,18 @@
           message = '🧼 Отвращение устранено. Чистота восстановлена.';
           break;
       }
-    
+
       if (text) {
         const el = document.createElement('div');
         el.textContent = text;
-        el.classList.add('destroy-all');
+        el.classList.add(`explode-${emotion}`);
         output.appendChild(el);
       } else if (link) {
         const el = document.createElement('a');
         el.href = link;
         el.textContent = link;
         el.target = '_blank';
-        el.classList.add('destroy-all');
+        el.classList.add(`explode-${emotion}`);
         output.appendChild(el);
       } else if (hasImage) {
         const reader = new FileReader();
@@ -205,55 +205,42 @@
           const img = document.createElement('img');
           img.src = e.target.result;
           img.style.maxWidth = '300px';
-          img.classList.add('destroy-all');
+          img.classList.add(`explode-${emotion}`);
           output.appendChild(img);
         }
         reader.readAsDataURL(imageInput.files[0]);
         return;
       }
-    
+
       textArea.value = '';
       linkInput.value = '';
       imageInput.value = '';
-    
+
       setTimeout(() => {
         output.style.opacity = 1;
       }, 100);
-    
+
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
       }, 3000);
     }
 
-function triggerFlash(emotion, times = 3, interval = 300) {
-  let count = 0;
-  const flashContainer = document.getElementById('flashContainer');
+    function triggerFlash(emotion, times = 3, interval = 300) {
+      let count = 0;
+      const flashContainer = document.getElementById('flashContainer');
 
-  const intervalId = setInterval(() => {
-    const flash = document.createElement('div');
-    flash.classList.add('flash', emotion);
-    flashContainer.appendChild(flash);
-    setTimeout(() => flash.remove(), 400);
+      const intervalId = setInterval(() => {
+        const flash = document.createElement('div');
+        flash.classList.add('flash', emotion);
+        flashContainer.appendChild(flash);
+        setTimeout(() => flash.remove(), 400);
 
-    count++;
-    if (count >= times) {
-      clearInterval(intervalId);
+        count++;
+        if (count >= times) {
+          clearInterval(intervalId);
+        }
+      }, interval);
     }
-  }, interval);
-}
-      textArea.value = '';
-      linkInput.value = '';
-      imageInput.value = '';
-
-      setTimeout(() => {
-        output.style.opacity = 1;
-      }, 100);
-
-      setTimeout(() => {
-        output.innerHTML = '<p>✅ Кринж уничтожен. Можешь выдохнуть.</p>';
-      }, 3000);
-    }
-
     function destroyEverything() {
       const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
       elements.forEach(el => {
@@ -276,3 +263,6 @@ function triggerFlash(emotion, times = 3, interval = 300) {
   </script>
 </body>
 </html>
+
+
+
