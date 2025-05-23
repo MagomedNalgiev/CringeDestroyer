@@ -232,21 +232,26 @@
     function destroyCringe() {
       const textArea = document.getElementById('cringeText');
       const linkInput = document.getElementById('cringeLink');
+      let imageInput = document.getElementById('cringeImage'); // let — чтобы обновлять
       const emotion = document.getElementById('emotion').value;
       const output = document.getElementById('output');
       const sound = document.getElementById('boomSound');
       output.innerHTML = '';
       output.style.opacity = 0;
+    
       const text = textArea.value;
       const link = linkInput.value;
       const hasImage = imageInput.files.length > 0;
+    
       if (!text && !link && !hasImage) {
         alert('Вставь что-нибудь кринжовое сначала!');
         return;
       }
+    
       triggerFlash(emotion);
       sound.currentTime = 0;
       sound.play();
+    
       let message = '';
       switch (emotion) {
         case 'sad': message = '💔 Кринж разорвал душу, но ты справился.'; break;
@@ -254,7 +259,9 @@
         case 'scared': message = '😰 Ты посмотрел страху в глаза и стер его.'; break;
         case 'disgusted': message = '🧼 Отвращение устранено. Чистота восстановлена.'; break;
       }
+    
       let el;
+    
       if (text) {
         el = document.createElement('div');
         el.textContent = text;
@@ -264,6 +271,7 @@
         el.textContent = link;
         el.target = '_blank';
       } else if (hasImage) {
+        const file = imageInput.files[0]; // сохраняем до замены поля
         const reader = new FileReader();
         reader.onload = function (e) {
           const img = document.createElement('img');
@@ -271,8 +279,8 @@
           img.style.maxWidth = '300px';
           img.classList.add(`explode-${emotion}`);
           output.appendChild(img);
-        
-          // Очистка полей
+    
+          // Очистка всех полей, включая замену input
           textArea.value = '';
           linkInput.value = '';
           const oldInput = document.getElementById('cringeImage');
@@ -281,38 +289,38 @@
           newInput.name = oldInput.name;
           oldInput.parentNode.replaceChild(newInput, oldInput);
           imageInput = newInput;
-        
-          // Показываем результат
+    
           setTimeout(() => {
             output.style.opacity = 1;
           }, 100);
           setTimeout(() => {
             output.innerHTML = `<p>✅ ${message}</p>`;
           }, 3000);
-        }
-        reader.readAsDataURL(imageInput.files[0]);
+        };
+        reader.readAsDataURL(file);
         return;
-
       }
+    
       el.classList.add(`explode-${emotion}`);
       output.appendChild(el);
+    
+      // Очистка полей
       textArea.value = '';
       linkInput.value = '';
-      
       const oldInput = document.getElementById('cringeImage');
       const newInput = oldInput.cloneNode(true);
       newInput.id = 'cringeImage';
       newInput.name = oldInput.name;
       oldInput.parentNode.replaceChild(newInput, oldInput);
-      imageInput = newInput; // теперь работает, потому что глобальный let
-
-
-      setTimeout(() => { output.style.opacity = 1; }, 100);
+      imageInput = newInput;
+    
+      setTimeout(() => {
+        output.style.opacity = 1;
+      }, 100);
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
       }, 3000);
     }
-
     function revealConfirmButton() {
       document.getElementById('nuke-button').style.display = 'none';
       document.getElementById('confirm-nuke-button').style.display = 'block';
