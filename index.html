@@ -468,7 +468,10 @@
       setTimeout(() => {
         blackhole.remove();
         const output = document.getElementById('output');
-        output.style.opacity = 1;
+        output.style.opacity = '1';
+        output.style.transform = 'none';
+        output.style.filter = 'none';
+        output.style.transition = 'none';
         output.innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">Всё исчезло в сингулярности... Наступила тишина.</p>';
       }, 2600);
     }
