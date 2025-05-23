@@ -432,14 +432,26 @@
 
     function destroyEverything() {
       const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
-      elements.forEach(el => {
-        el.classList.add('sucked-in');
-        if (el.tagName !== 'H1') el.disabled = true;
-      });
-    
       const blackhole = document.createElement('div');
       blackhole.id = 'blackhole';
       document.body.appendChild(blackhole);
+      
+      const holeRect = blackhole.getBoundingClientRect();
+      const centerX = holeRect.left + holeRect.width / 2;
+      const centerY = holeRect.top + holeRect.height / 2;
+      
+      const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
+      elements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const dx = centerX - (rect.left + rect.width / 2);
+        const dy = centerY - (rect.top + rect.height / 2);
+      
+        el.style.transition = 'transform 2s ease-in-out, opacity 2s ease-in-out, filter 2s ease-in-out';
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(0) rotate(720deg)`;
+        el.style.opacity = '0';
+        el.style.filter = 'blur(6px)';
+        if (el.tagName !== 'H1') el.disabled = true;
+      });
     
       document.body.style.background = '#000';
       document.getElementById('boomSound').play();
