@@ -148,51 +148,99 @@
     }
 
     function destroyCringe() {
-      const textArea = document.getElementById('cringeText');
-      const linkInput = document.getElementById('cringeLink');
-      const imageInput = document.getElementById('cringeImage');
-      const emotion = document.getElementById('emotion').value;
-      const output = document.getElementById('output');
-      const sound = document.getElementById('boomSound');
-      output.innerHTML = '';
-      output.style.opacity = 0;
+  const textArea = document.getElementById('cringeText');
+  const linkInput = document.getElementById('cringeLink');
+  const imageInput = document.getElementById('cringeImage');
+  const emotion = document.getElementById('emotion').value;
+  const output = document.getElementById('output');
+  const sound = document.getElementById('boomSound');
+  output.innerHTML = '';
+  output.style.opacity = 0;
 
-      const text = textArea.value;
-      const link = linkInput.value;
-      const hasImage = imageInput.files.length > 0;
+  const text = textArea.value;
+  const link = linkInput.value;
+  const hasImage = imageInput.files.length > 0;
 
-      if (!text && !link && !hasImage) {
-        alert('Вставь что-нибудь кринжовое сначала!');
-        return;
-      }
+  if (!text && !link && !hasImage) {
+    alert('Вставь что-нибудь кринжовое сначала!');
+    return;
+  }
 
-      sound.currentTime = 0;
-      sound.play();
+  // Эффекты и звук в зависимости от эмоции
+  triggerFlash(emotion);
+  sound.currentTime = 0;
+  sound.play();
 
-      if (text) {
-        const el = document.createElement('div');
-        el.textContent = text;
-        el.classList.add('destroy-all');
-        output.appendChild(el);
-      } else if (link) {
-        const el = document.createElement('a');
-        el.href = link;
-        el.textContent = link;
-        el.target = '_blank';
-        el.classList.add('destroy-all');
-        output.appendChild(el);
-      } else if (hasImage) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          img.style.maxWidth = '300px';
-          img.classList.add('destroy-all');
-          output.appendChild(img);
-        }
-        reader.readAsDataURL(imageInput.files[0]);
-      }
+  let message = '';
+  switch (emotion) {
+    case 'sad':
+      message = '💔 Кринж разорвал душу, но ты справился.';
+      break;
+    case 'angry':
+      message = '🔥 Злость выплеснута. Кринж уничтожен.';
+      break;
+    case 'scared':
+      message = '😰 Ты посмотрел страху в глаза и стер его.';
+      break;
+    case 'disgusted':
+      message = '🧼 Отвращение устранено. Чистота восстановлена.';
+      break;
+  }
 
+  if (text) {
+    const el = document.createElement('div');
+    el.textContent = text;
+    el.classList.add('destroy-all');
+    output.appendChild(el);
+  } else if (link) {
+    const el = document.createElement('a');
+    el.href = link;
+    el.textContent = link;
+    el.target = '_blank';
+    el.classList.add('destroy-all');
+    output.appendChild(el);
+  } else if (hasImage) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.maxWidth = '300px';
+      img.classList.add('destroy-all');
+      output.appendChild(img);
+    }
+    reader.readAsDataURL(imageInput.files[0]);
+    return;
+  }
+
+  textArea.value = '';
+  linkInput.value = '';
+  imageInput.value = '';
+
+  setTimeout(() => {
+    output.style.opacity = 1;
+  }, 100);
+
+  setTimeout(() => {
+    output.innerHTML = `<p>✅ ${message}</p>`;
+  }, 3000);
+}
+
+function triggerFlash(emotion, times = 3, interval = 300) {
+  let count = 0;
+  const flashContainer = document.getElementById('flashContainer');
+
+  const intervalId = setInterval(() => {
+    const flash = document.createElement('div');
+    flash.classList.add('flash', emotion);
+    flashContainer.appendChild(flash);
+    setTimeout(() => flash.remove(), 400);
+
+    count++;
+    if (count >= times) {
+      clearInterval(intervalId);
+    }
+  }, interval);
+}
       textArea.value = '';
       linkInput.value = '';
       imageInput.value = '';
