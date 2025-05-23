@@ -90,6 +90,21 @@
     .destroy-all {
       animation: destroy-all 5s forwards;
     }
+    .explode-sad {
+      animation: explode-sad 2.5s forwards, shake 1.5s ease-in-out;
+    }
+    
+    .explode-angry {
+      animation: explode-angry 2.5s forwards, shake 1.5s ease-in-out;
+    }
+    
+    .explode-scared {
+      animation: explode-scared 2.5s forwards, shake 1.5s ease-in-out;
+    }
+    
+    .explode-disgusted {
+      animation: explode-disgusted 2.5s forwards, shake 1.5s ease-in-out;
+    }
     .flash.sad { background: radial-gradient(#66ccff, rgba(102,204,255,0)); animation: flashEffect 0.4s ease-in-out; }
     .flash.angry { background: radial-gradient(#ff3300, rgba(255,51,0,0)); animation: flashEffect 0.4s ease-in-out; }
     .flash.scared { background: radial-gradient(#cc66ff, rgba(204,102,255,0)); animation: flashEffect 0.4s ease-in-out; }
@@ -161,6 +176,32 @@
       0% { transform: scale(1); opacity: 1; filter: grayscale(0); }
       50% { transform: scale(2); filter: grayscale(1); }
       100% { transform: scale(0); opacity: 0; filter: grayscale(1); }
+    }
+    @keyframes explode-sad {
+      0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+      50% { transform: translateY(30px) scale(0.8); opacity: 0.5; filter: blur(2px); }
+      100% { transform: translateY(100px) scale(0.5); opacity: 0; filter: blur(5px); }
+    }
+    
+    @keyframes explode-angry {
+      0% { transform: scale(1); opacity: 1; filter: brightness(1); }
+      30% { transform: scale(1.5) rotate(10deg); filter: brightness(3) drop-shadow(0 0 10px red); }
+      70% { transform: scale(1.2) rotate(-10deg); }
+      100% { transform: scale(0); opacity: 0; filter: brightness(0); }
+    }
+    
+    @keyframes explode-scared {
+      0% { transform: scale(1); opacity: 1; }
+      25% { transform: scale(1.2) translateX(-40px); }
+      50% { transform: scale(1.5) translateX(40px); }
+      75% { transform: scale(0.8) translateX(-20px); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+    
+    @keyframes explode-disgusted {
+      0% { transform: rotate(0deg) scale(1); filter: hue-rotate(0deg); opacity: 1; }
+      50% { transform: rotate(180deg) scale(1.3); filter: hue-rotate(90deg) saturate(2); }
+      100% { transform: rotate(720deg) scale(0); filter: hue-rotate(180deg); opacity: 0; }
     }
   </style>
 </head>
