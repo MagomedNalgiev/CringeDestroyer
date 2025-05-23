@@ -5,142 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cringe Destroyer</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #121212;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    /* ... все стили остаются как есть ... */
+    .final-flash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
       height: 100vh;
-      margin: 0;
-      padding: 2rem;
-      overflow: hidden;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    textarea, input[type="url"], select {
-      width: 100%;
-      max-width: 500px;
-      padding: 1rem;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      border: none;
-      border-radius: 8px;
-    }
-    input[type="file"] {
-      width: 100%;
-      max-width: 500px;
-      padding: 1rem;
-      font-size: 1rem;
-      margin-bottom: 1.2rem;
-      border-radius: 8px;
-      background-color: #1e1e1e;
-      color: #ccc;
-      border: 2px dashed #444;
-      cursor: pointer;
-    }
-    input[type="file"]::file-selector-button {
-      background-color: #333;
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button {
-      background: red;
-      border: none;
-      color: white;
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      margin-bottom: 1rem;
-    }
-    button:hover {
-      background: darkred;
-    }
-    #output {
-      margin-top: 2rem;
-      font-size: 1.5rem;
+      background: white;
       opacity: 0;
-      transition: opacity 1s ease;
-      position: relative;
+      animation: finalFlashAnim 0.6s ease-in-out forwards;
+      z-index: 9999;
     }
-    .destroyed {
-      position: relative;
-    }
-    .explode-sad {
-      animation: explode-sad 2.5s forwards, shake 1.5s ease-in-out;
-    }
-    .explode-angry {
-      animation: explode-angry 2.5s forwards, shake 1.5s ease-in-out;
-    }
-    .explode-scared {
-      animation: explode-scared 2.5s forwards, shake 1.5s ease-in-out;
-    }
-    .explode-disgusted {
-      animation: explode-disgusted 2.5s forwards, shake 1.5s ease-in-out;
-    }
-    .destroy-all {
-      animation: destroy-all 5s forwards;
-    }
-    @keyframes explode-sad {
-      0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
-      50% { transform: translateY(30px) scale(0.8); opacity: 0.5; filter: blur(2px); }
-      100% { transform: translateY(100px) scale(0.5); opacity: 0; filter: blur(5px); }
-    }
-    @keyframes explode-angry {
-      0% { transform: scale(1); opacity: 1; filter: brightness(1); }
-      30% { transform: scale(1.5) rotate(10deg); filter: brightness(3) drop-shadow(0 0 10px red); }
-      70% { transform: scale(1.2) rotate(-10deg); }
-      100% { transform: scale(0); opacity: 0; filter: brightness(0); }
-    }
-    @keyframes explode-scared {
-      0% { transform: scale(1); opacity: 1; }
-      25% { transform: scale(1.2) translateX(-40px); }
-      50% { transform: scale(1.5) translateX(40px); }
-      75% { transform: scale(0.8) translateX(-20px); }
-      100% { transform: scale(0); opacity: 0; }
-    }
-    @keyframes explode-disgusted {
-      0% { transform: rotate(0deg) scale(1); filter: hue-rotate(0deg); opacity: 1; }
-      50% { transform: rotate(180deg) scale(1.3); filter: hue-rotate(90deg) saturate(2); }
-      100% { transform: rotate(720deg) scale(0); filter: hue-rotate(180deg); opacity: 0; }
-    }
-    @keyframes destroy-all {
-      0% { transform: scale(1); opacity: 1; filter: grayscale(0); }
-      50% { transform: scale(2); filter: grayscale(1); }
-      100% { transform: scale(0); opacity: 0; filter: grayscale(1); }
-    }
-    @media (max-width: 600px) {
-      body {
-        padding: 1rem;
-      }
-      h1 {
-        font-size: 1.8rem;
-        text-align: center;
-      }
-      textarea, input[type="url"], input[type="file"], select, button {
-        font-size: 1rem;
-        padding: 0.8rem;
-      }
-      input[type="file"]::file-selector-button {
-        padding: 0.4rem 0.8rem;
-      }
-      #output {
-        font-size: 1.2rem;
-        text-align: center;
-      }
-      button {
-        width: 100%;
-        max-width: 500px;
-      }
+    @keyframes finalFlashAnim {
+      0% { opacity: 0; }
+      30% { opacity: 1; }
+      100% { opacity: 0; }
     }
   </style>
 </head>
@@ -170,9 +50,16 @@
       });
       document.body.style.background = '#000';
       document.getElementById('boomSound').play();
+
+      setTimeout(() => {
+        const flash = document.createElement('div');
+        flash.classList.add('final-flash');
+        document.body.appendChild(flash);
+      }, 2000);
+
       setTimeout(() => {
         document.getElementById('output').innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">💣 Всё очищено. Наступила тишина.</p>';
-      }, 2000);
+      }, 2600);
     }
   </script>
 </body>
