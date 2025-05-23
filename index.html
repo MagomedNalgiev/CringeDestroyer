@@ -285,7 +285,9 @@
       output.appendChild(el);
       textArea.value = '';
       linkInput.value = '';
-      imageInput.value = '';
+      const oldInput = document.getElementById('cringeImage');
+      const newInput = oldInput.cloneNode(true);
+      oldInput.parentNode.replaceChild(newInput, oldInput);
       setTimeout(() => { output.style.opacity = 1; }, 100);
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
