@@ -319,7 +319,19 @@
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
       }, 3000);
+      resetFileInput();
+
     }
+    function resetFileInput() {
+      const oldInput = document.getElementById('cringeImage');
+      const newInput = oldInput.cloneNode(true);
+      newInput.id = 'cringeImage';
+      newInput.name = oldInput.name;
+      oldInput.replaceWith(newInput);
+    }
+
+
+    
     function revealConfirmButton() {
       document.getElementById('nuke-button').style.display = 'none';
       document.getElementById('confirm-nuke-button').style.display = 'block';
