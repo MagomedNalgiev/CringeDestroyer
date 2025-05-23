@@ -273,6 +273,10 @@
     <option value="scared">😨 Страх</option>
     <option value="disgusted">🤢 Отвращение</option>
   </select>
+  <label style="margin-bottom: 1rem; display: flex; align-items: center;">
+    <input type="checkbox" id="recordToggle" style="margin-right: 0.5rem;">
+    Задокументировать ликвидацию
+  </label>
   <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
   <div id="output"></div>
   <div id="flashContainer"></div>
@@ -296,6 +300,9 @@
     }
 
     function destroyCringe() {
+      const shouldRecord = document.getElementById('recordToggle')?.checked;
+      if (shouldRecord) startRecording();
+
       const textArea = document.getElementById('cringeText');
       const linkInput = document.getElementById('cringeLink');
       let imageInput = document.getElementById('cringeImage'); // let — чтобы обновлять
@@ -332,8 +339,6 @@
         case 'scared': effect = 'effect-glitch'; break;
         case 'disgusted': effect = 'effect-burn'; break;
       }
-
-
     
       let el;
     
@@ -409,6 +414,9 @@
     }
 
     function destroyEverything() {
+      const shouldRecord = document.getElementById('recordToggle')?.checked;
+      if (shouldRecord) startRecording();
+
       const blackhole = document.createElement('div');
       blackhole.id = 'blackhole';
       document.body.appendChild(blackhole);
@@ -449,5 +457,44 @@
 
 
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.min.js"></script>
+  
+  <script>
+    function startRecording() {
+      const duration = 2200; // Длительность записи (мс)
+      const interval = 200;
+      const totalFrames = Math.floor(duration / interval);
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+  
+      let captured = 0;
+      const captureFrame = () => {
+        html2canvas(document.body).then(canvas => {
+          gif.addFrame(canvas, {delay: interval});
+          captured++;
+          if (captured < totalFrames) {
+            setTimeout(captureFrame, interval);
+          } else {
+            gif.on('finished', function(blob) {
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = "cringe_destruction.gif";
+              a.click();
+            });
+            gif.render();
+          }
+        });
+      };
+  
+      captureFrame();
+    }
+  </script>
+
 </body>
 </html>
