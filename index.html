@@ -301,11 +301,17 @@
 
     function destroyCringe() {
       const shouldRecord = document.getElementById('recordToggle')?.checked;
-      if (shouldRecord) startRecording();
-
+      if (shouldRecord) {
+        startRecording(() => performCringeDestruction());
+        return;
+      }
+      performCringeDestruction();
+    }
+    
+    function performCringeDestruction() {
       const textArea = document.getElementById('cringeText');
       const linkInput = document.getElementById('cringeLink');
-      let imageInput = document.getElementById('cringeImage'); // let — чтобы обновлять
+      let imageInput = document.getElementById('cringeImage');
       const emotion = document.getElementById('emotion').value;
       const output = document.getElementById('output');
       const sound = document.getElementById('boomSound');
@@ -332,6 +338,7 @@
         case 'scared': message = '😰 Ты посмотрел страху в глаза и стер его.'; break;
         case 'disgusted': message = '🧼 Отвращение устранено. Чистота восстановлена.'; break;
       }
+    
       let effect = '';
       switch (emotion) {
         case 'sad': effect = 'effect-blackhole'; break;
@@ -341,7 +348,6 @@
       }
     
       let el;
-    
       if (text) {
         el = document.createElement('div');
         el.textContent = text;
@@ -351,7 +357,7 @@
         el.textContent = link;
         el.target = '_blank';
       } else if (hasImage) {
-        const file = imageInput.files[0]; // сохраняем до замены поля
+        const file = imageInput.files[0];
         const reader = new FileReader();
         reader.onload = function (e) {
           const img = document.createElement('img');
@@ -360,7 +366,6 @@
           img.classList.add(`explode-${emotion}`, effect);
           output.appendChild(img);
     
-          // Очистка всех полей, включая замену input
           textArea.value = '';
           linkInput.value = '';
           const oldInput = document.getElementById('cringeImage');
@@ -384,10 +389,8 @@
       el.classList.add(`explode-${emotion}`, effect);
       output.appendChild(el);
     
-      // Очистка полей
       textArea.value = '';
       linkInput.value = '';
-      // Сброс поля загрузки файла
       const oldInput = document.getElementById('cringeImage');
       const newInput = document.createElement('input');
       newInput.type = 'file';
@@ -396,7 +399,6 @@
       newInput.accept = 'image/*';
       newInput.className = oldInput.className;
       oldInput.replaceWith(newInput);
-
     
       setTimeout(() => {
         output.style.opacity = 1;
@@ -404,8 +406,8 @@
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
       }, 3000);
-
     }
+
 
     
     function revealConfirmButton() {
@@ -415,8 +417,14 @@
 
     function destroyEverything() {
       const shouldRecord = document.getElementById('recordToggle')?.checked;
-      if (shouldRecord) startRecording();
-
+      if (shouldRecord) {
+        startRecording(() => performTotalDestruction());
+        return;
+      }
+      performTotalDestruction();
+    }
+    
+    function performTotalDestruction() {
       const blackhole = document.createElement('div');
       blackhole.id = 'blackhole';
       document.body.appendChild(blackhole);
@@ -461,8 +469,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.min.js"></script>
   
   <script>
-    function startRecording() {
-      const duration = 2200; // Длительность записи (мс)
+    function startRecording(callback) {
+      const duration = 2200;
       const interval = 200;
       const totalFrames = Math.floor(duration / interval);
       const gif = new GIF({
@@ -471,11 +479,11 @@
         width: window.innerWidth,
         height: window.innerHeight
       });
-  
+    
       let captured = 0;
       const captureFrame = () => {
         html2canvas(document.body).then(canvas => {
-          gif.addFrame(canvas, {delay: interval});
+          gif.addFrame(canvas, { delay: interval });
           captured++;
           if (captured < totalFrames) {
             setTimeout(captureFrame, interval);
@@ -486,14 +494,16 @@
               a.href = url;
               a.download = "cringe_destruction.gif";
               a.click();
+              if (typeof callback === 'function') callback(); // вызываем callback после завершения
             });
             gif.render();
           }
         });
       };
-  
+    
       captureFrame();
     }
+
   </script>
 
 </body>
