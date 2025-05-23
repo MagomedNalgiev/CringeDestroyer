@@ -301,8 +301,14 @@
 
     function destroyCringe() {
       const shouldRecord = document.getElementById('recordToggle')?.checked;
-      if (shouldRecord) startRecording(); // начать запись ПАРАЛЛЕЛЬНО
-      performCringeDestruction();         // анимация и логика запускается сразу
+      if (shouldRecord) {
+        try {
+          startRecording();
+        } catch (e) {
+          console.warn('Ошибка записи GIF, уничтожение всё равно выполнится:', e);
+        }
+      }
+      performCringeDestruction();
     }
     
     function performCringeDestruction() {
@@ -414,8 +420,14 @@
 
     function destroyEverything() {
       const shouldRecord = document.getElementById('recordToggle')?.checked;
-      if (shouldRecord) startRecording(); // не ждем, запускаем сразу
-      performTotalDestruction();          // выполняем уничтожение
+      if (shouldRecord) {
+        try {
+          startRecording();
+        } catch (e) {
+          console.warn('Ошибка записи GIF, полный снос всё равно выполнится:', e);
+        }
+      }
+      performTotalDestruction();
     }
     
     function performTotalDestruction() {
