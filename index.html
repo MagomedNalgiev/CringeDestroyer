@@ -87,6 +87,9 @@
       pointer-events: none;
       z-index: 100;
     }
+    .destroy-all {
+      animation: destroy-all 5s forwards;
+    }
     .flash.sad { background: radial-gradient(#66ccff, rgba(102,204,255,0)); animation: flashEffect 0.4s ease-in-out; }
     .flash.angry { background: radial-gradient(#ff3300, rgba(255,51,0,0)); animation: flashEffect 0.4s ease-in-out; }
     .flash.scared { background: radial-gradient(#cc66ff, rgba(204,102,255,0)); animation: flashEffect 0.4s ease-in-out; }
@@ -132,6 +135,7 @@
       display: none;
       margin-top: 0.5rem;
     }
+    
     @keyframes shake {
       0%, 100% { transform: translate(0, 0); }
       10% { transform: translate(-10px, 10px); }
@@ -152,6 +156,11 @@
       0% { opacity: 0; }
       30% { opacity: 1; }
       100% { opacity: 0; }
+    }
+    @keyframes destroy-all {
+      0% { transform: scale(1); opacity: 1; filter: grayscale(0); }
+      50% { transform: scale(2); filter: grayscale(1); }
+      100% { transform: scale(0); opacity: 0; filter: grayscale(1); }
     }
   </style>
 </head>
@@ -255,7 +264,7 @@
     function destroyEverything() {
       const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
       elements.forEach(el => {
-        el.classList.add('explode-angry');
+        el.classList.add('destroy-all');
         if (el.tagName !== 'H1') el.disabled = true;
       });
       document.body.style.background = '#000';
@@ -269,6 +278,7 @@
         document.getElementById('output').innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">💣 Всё очищено. Наступила тишина.</p>';
       }, 2600);
     }
+
   </script>
 </body>
 </html>
