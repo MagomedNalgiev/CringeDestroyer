@@ -22,7 +22,7 @@
       font-size: 2.5rem;
       margin-bottom: 1rem;
     }
-    textarea, input[type="url"] {
+    textarea, input[type="url"], select {
       width: 100%;
       max-width: 500px;
       padding: 1rem;
@@ -95,6 +95,12 @@
   <textarea id="cringeText" placeholder="Вставь сюда кринжовый текст..." rows="4"></textarea>
   <input type="url" id="cringeLink" placeholder="...или вставь ссылку">
   <input type="file" id="cringeImage" accept="image/*">
+  <select id="emotion">
+    <option value="sad">😢 Грусть</option>
+    <option value="angry">😡 Злость</option>
+    <option value="scared">😨 Страх</option>
+    <option value="disgusted">🤢 Отвращение</option>
+  </select>
   <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
   <div id="output"></div>
   <div id="flashContainer"></div>
@@ -122,6 +128,7 @@
       const textArea = document.getElementById('cringeText');
       const linkInput = document.getElementById('cringeLink');
       const imageInput = document.getElementById('cringeImage');
+      const emotion = document.getElementById('emotion').value;
       const output = document.getElementById('output');
       const sound = document.getElementById('boomSound');
       output.innerHTML = '';
@@ -134,6 +141,22 @@
       triggerFlash(3);
       sound.currentTime = 0;
       sound.play();
+
+      let message = '';
+      switch (emotion) {
+        case 'sad':
+          message = '💔 Кринж разорвал душу, но ты справился.';
+          break;
+        case 'angry':
+          message = '🔥 Злость выплеснута. Кринж уничтожен.';
+          break;
+        case 'scared':
+          message = '😰 Ты посмотрел страху в глаза и стер его.';
+          break;
+        case 'disgusted':
+          message = '🧼 Отвращение устранено. Чистота восстановлена.';
+          break;
+      }
 
       if (text) {
         const el = document.createElement('div');
@@ -172,7 +195,7 @@
       }, 100);
 
       setTimeout(() => {
-        output.innerHTML = '<p>✅ Кринж уничтожен. Ты свободен.</p>';
+        output.innerHTML = `<p>✅ ${message}</p>`;
       }, 3000);
     }
   </script>
