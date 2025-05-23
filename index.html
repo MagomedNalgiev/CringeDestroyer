@@ -88,7 +88,7 @@
       animation: explode-disgusted 2.5s forwards, shake 1.5s ease-in-out;
     }
     .destroy-all {
-      animation: destroy-all 3s forwards;
+      animation: destroy-all 5s forwards;
     }
     @keyframes explode-sad {
       0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
@@ -115,7 +115,7 @@
     }
     @keyframes destroy-all {
       0% { transform: scale(1); opacity: 1; filter: grayscale(0); }
-      50% { transform: scale(1.5); filter: grayscale(1); }
+      50% { transform: scale(2); filter: grayscale(1); }
       100% { transform: scale(0); opacity: 0; filter: grayscale(1); }
     }
     @media (max-width: 600px) {
@@ -145,7 +145,7 @@
   </style>
 </head>
 <body>
-  <h1>Уничтожь Кринж</h1>
+  <h1 id="pageTitle">Уничтожь Кринж</h1>
   <textarea id="cringeText" placeholder="Вставь сюда кринжовый текст..." rows="4"></textarea>
   <input type="url" id="cringeLink" placeholder="...или вставь ссылку">
   <input type="file" id="cringeImage" accept="image/*">
@@ -163,13 +163,16 @@
 
   <script>
     function destroyEverything() {
-      const elements = document.querySelectorAll('textarea, input, select, button');
+      const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
       elements.forEach(el => {
         el.classList.add('destroy-all');
-        el.disabled = true;
+        if (el.tagName !== 'H1') el.disabled = true;
       });
       document.body.style.background = '#000';
-      document.getElementById('output').innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">💣 Всё очищено. Наступила тишина.</p>';
+      document.getElementById('boomSound').play();
+      setTimeout(() => {
+        document.getElementById('output').innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">💣 Всё очищено. Наступила тишина.</p>';
+      }, 2000);
     }
   </script>
 </body>
