@@ -31,6 +31,26 @@
       border: none;
       border-radius: 8px;
     }
+    input[type="file"] {
+      width: 100%;
+      max-width: 500px;
+      padding: 1rem;
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      border-radius: 8px;
+      background-color: #1e1e1e;
+      color: #ccc;
+      border: 2px dashed #444;
+      cursor: pointer;
+    }
+    input[type="file"]::file-selector-button {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     button {
       background: red;
       border: none;
@@ -136,6 +156,12 @@
 
       const text = textArea.value;
       const link = linkInput.value;
+      const hasImage = imageInput.files.length > 0;
+
+      if (!text && !link && !hasImage) {
+        alert('Вставь что-нибудь кринжовое сначала!');
+        return;
+      }
 
       // Тройная вспышка и звук
       triggerFlash(3);
@@ -170,7 +196,7 @@
         el.target = '_blank';
         el.classList.add('destroyed');
         output.appendChild(el);
-      } else if (imageInput.files.length > 0) {
+      } else if (hasImage) {
         const reader = new FileReader();
         reader.onload = function (e) {
           const img = document.createElement('img');
@@ -180,9 +206,6 @@
           output.appendChild(img);
         }
         reader.readAsDataURL(imageInput.files[0]);
-      } else {
-        alert('Вставь что-нибудь кринжовое сначала!');
-        return;
       }
 
       // Очищаем поля ввода
