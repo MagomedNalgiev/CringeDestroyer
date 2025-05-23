@@ -98,6 +98,7 @@
   <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
   <div id="output"></div>
   <div id="flashContainer"></div>
+  <audio id="boomSound" src="boom.mp3" preload="auto"></audio>
 
   <script>
     function triggerFlash(times, interval = 300) {
@@ -122,14 +123,17 @@
       const linkInput = document.getElementById('cringeLink');
       const imageInput = document.getElementById('cringeImage');
       const output = document.getElementById('output');
+      const sound = document.getElementById('boomSound');
       output.innerHTML = '';
       output.style.opacity = 0;
 
       const text = textArea.value;
       const link = linkInput.value;
 
-      // Тройная вспышка
+      // Тройная вспышка и звук
       triggerFlash(3);
+      sound.currentTime = 0;
+      sound.play();
 
       if (text) {
         const el = document.createElement('div');
