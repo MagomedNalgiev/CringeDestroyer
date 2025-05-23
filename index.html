@@ -306,12 +306,16 @@
       // Очистка полей
       textArea.value = '';
       linkInput.value = '';
+      // Сброс поля загрузки файла
       const oldInput = document.getElementById('cringeImage');
-      const newInput = oldInput.cloneNode(true);
+      const newInput = document.createElement('input');
+      newInput.type = 'file';
       newInput.id = 'cringeImage';
-      newInput.name = oldInput.name;
-      oldInput.parentNode.replaceChild(newInput, oldInput);
-      imageInput = newInput;
+      newInput.name = 'cringeImage';
+      newInput.accept = 'image/*';
+      newInput.className = oldInput.className;
+      oldInput.replaceWith(newInput);
+
     
       setTimeout(() => {
         output.style.opacity = 1;
@@ -319,17 +323,8 @@
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
       }, 3000);
-      resetFileInput();
 
     }
-    function resetFileInput() {
-      const oldInput = document.getElementById('cringeImage');
-      const newInput = oldInput.cloneNode(true);
-      newInput.id = 'cringeImage';
-      newInput.name = oldInput.name;
-      oldInput.replaceWith(newInput);
-    }
-
 
     
     function revealConfirmButton() {
