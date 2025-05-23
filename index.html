@@ -285,13 +285,13 @@
       output.appendChild(el);
       textArea.value = '';
       linkInput.value = '';
+      
       const oldInput = document.getElementById('cringeImage');
       const newInput = oldInput.cloneNode(true);
       newInput.id = 'cringeImage';
       newInput.name = oldInput.name;
       oldInput.parentNode.replaceChild(newInput, oldInput);
-      // Обновляем ссылку на input
-      imageInput = newInput;
+      imageInput = newInput; // теперь работает
 
       setTimeout(() => { output.style.opacity = 1; }, 100);
       setTimeout(() => {
