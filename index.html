@@ -271,6 +271,18 @@
           img.style.maxWidth = '300px';
           img.classList.add(`explode-${emotion}`);
           output.appendChild(img);
+        
+          // Очистка полей
+          textArea.value = '';
+          linkInput.value = '';
+          const oldInput = document.getElementById('cringeImage');
+          const newInput = oldInput.cloneNode(true);
+          newInput.id = 'cringeImage';
+          newInput.name = oldInput.name;
+          oldInput.parentNode.replaceChild(newInput, oldInput);
+          imageInput = newInput;
+        
+          // Показываем результат
           setTimeout(() => {
             output.style.opacity = 1;
           }, 100);
@@ -280,6 +292,7 @@
         }
         reader.readAsDataURL(imageInput.files[0]);
         return;
+
       }
       el.classList.add(`explode-${emotion}`);
       output.appendChild(el);
