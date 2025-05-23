@@ -235,6 +235,47 @@
       80% { transform: translateY(5px) skewY(-10deg); }
       100% { transform: none; opacity: 0; }
     }
+    @keyframes suck-into-blackhole {
+      0% {
+        transform: scale(1) translate(0, 0) rotate(0deg);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(0.5) translate(0, -50px) rotate(180deg);
+        opacity: 0.7;
+        filter: blur(2px);
+      }
+      100% {
+        transform: scale(0) translate(0, 0) rotate(720deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+    }
+    
+    .sucked-in {
+      animation: suck-into-blackhole 2s forwards ease-in-out;
+    }
+    
+    #blackhole {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      margin-top: -100px;
+      margin-left: -100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, black 0%, #00000088 60%, transparent 80%);
+      box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      animation: pulseBlackhole 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulseBlackhole {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.6; }
+    }
+
     
 
   </style>
@@ -388,20 +429,28 @@
     function destroyEverything() {
       const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
       elements.forEach(el => {
-        el.classList.add('destroy-all');
+        el.classList.add('sucked-in');
         if (el.tagName !== 'H1') el.disabled = true;
       });
+    
+      const blackhole = document.createElement('div');
+      blackhole.id = 'blackhole';
+      document.body.appendChild(blackhole);
+    
       document.body.style.background = '#000';
       document.getElementById('boomSound').play();
+    
       setTimeout(() => {
         const flash = document.createElement('div');
         flash.classList.add('final-flash');
         document.body.appendChild(flash);
       }, 2000);
+    
       setTimeout(() => {
+        blackhole.remove();
         const output = document.getElementById('output');
         output.style.opacity = 1;
-        output.innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">Всё очищено. Наступила тишина.</p>';
+        output.innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">🌌 Всё исчезло в сингулярности...</p>';
       }, 2600);
 
     }
