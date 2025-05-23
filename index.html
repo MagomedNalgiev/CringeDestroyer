@@ -65,18 +65,6 @@
       transition: opacity 1s ease;
       position: relative;
     }
-    .explode-sad {
-      animation: explode-sad 2.5s forwards, shake 1.5s ease-in-out;
-    }
-    .explode-angry {
-      animation: explode-angry 2.5s forwards, shake 1.5s ease-in-out;
-    }
-    .explode-scared {
-      animation: explode-scared 2.5s forwards, shake 1.5s ease-in-out;
-    }
-    .explode-disgusted {
-      animation: explode-disgusted 2.5s forwards, shake 1.5s ease-in-out;
-    }
     .flash {
       position: fixed;
       top: 0;
@@ -90,6 +78,7 @@
     .destroy-all {
       animation: destroy-all 5s forwards;
     }
+    
     .explode-sad {
       animation: explode-sad 2.5s forwards, shake 1.5s ease-in-out;
     }
@@ -265,18 +254,15 @@
         case 'scared': message = '😰 Ты посмотрел страху в глаза и стер его.'; break;
         case 'disgusted': message = '🧼 Отвращение устранено. Чистота восстановлена.'; break;
       }
+      let el;
       if (text) {
-        const el = document.createElement('div');
+        el = document.createElement('div');
         el.textContent = text;
-        el.classList.add(`explode-${emotion}`);
-        output.appendChild(el);
       } else if (link) {
-        const el = document.createElement('a');
+        el = document.createElement('a');
         el.href = link;
         el.textContent = link;
         el.target = '_blank';
-        el.classList.add(`explode-${emotion}`);
-        output.appendChild(el);
       } else if (hasImage) {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -285,10 +271,18 @@
           img.style.maxWidth = '300px';
           img.classList.add(`explode-${emotion}`);
           output.appendChild(img);
+          setTimeout(() => {
+            output.style.opacity = 1;
+          }, 100);
+          setTimeout(() => {
+            output.innerHTML = `<p>✅ ${message}</p>`;
+          }, 3000);
         }
         reader.readAsDataURL(imageInput.files[0]);
         return;
       }
+      el.classList.add(`explode-${emotion}`);
+      output.appendChild(el);
       textArea.value = '';
       linkInput.value = '';
       imageInput.value = '';
