@@ -427,7 +427,8 @@
       const centerX = holeRect.left + holeRect.width / 2;
       const centerY = holeRect.top + holeRect.height / 2;
     
-      const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
+      const elements = [...document.querySelectorAll('textarea, input, select, button, #pageTitle')]
+        .filter(el => !['nuke-button', 'confirm-nuke-button'].includes(el.id));
       elements.forEach(el => {
         const rect = el.getBoundingClientRect();
         const dx = centerX - (rect.left + rect.width / 2);
