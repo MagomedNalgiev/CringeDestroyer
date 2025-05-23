@@ -288,7 +288,11 @@
       const oldInput = document.getElementById('cringeImage');
       const newInput = oldInput.cloneNode(true);
       newInput.id = 'cringeImage';
+      newInput.name = oldInput.name;
       oldInput.parentNode.replaceChild(newInput, oldInput);
+      // Обновляем ссылку на input
+      imageInput = newInput;
+
       setTimeout(() => { output.style.opacity = 1; }, 100);
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
