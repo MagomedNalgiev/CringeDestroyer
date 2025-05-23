@@ -97,53 +97,17 @@
     .explode-sad.effect-blackhole {
       animation: explode-sad 2.5s forwards, blackhole 2.5s forwards;
     }
-    .explode-sad.effect-laser {
-      animation: explode-sad 2.5s forwards, laser 2.5s forwards;
-    }
-    .explode-sad.effect-burn {
-      animation: explode-sad 2.5s forwards, burn 2.5s forwards;
-    }
-    .explode-sad.effect-glitch {
-      animation: explode-sad 2.5s forwards, glitch 2.5s forwards;
-    }
     
-    .explode-angry.effect-blackhole {
-      animation: explode-angry 2.5s forwards, blackhole 2.5s forwards;
-    }
     .explode-angry.effect-laser {
       animation: explode-angry 2.5s forwards, laser 2.5s forwards;
     }
-    .explode-angry.effect-burn {
-      animation: explode-angry 2.5s forwards, burn 2.5s forwards;
-    }
-    .explode-angry.effect-glitch {
-      animation: explode-angry 2.5s forwards, glitch 2.5s forwards;
-    }
-    
-    .explode-scared.effect-blackhole {
-      animation: explode-scared 2.5s forwards, blackhole 2.5s forwards;
-    }
-    .explode-scared.effect-laser {
-      animation: explode-scared 2.5s forwards, laser 2.5s forwards;
-    }
-    .explode-scared.effect-burn {
-      animation: explode-scared 2.5s forwards, burn 2.5s forwards;
-    }
+      
     .explode-scared.effect-glitch {
       animation: explode-scared 2.5s forwards, glitch 2.5s forwards;
     }
-    
-    .explode-disgusted.effect-blackhole {
-      animation: explode-disgusted 2.5s forwards, blackhole 2.5s forwards;
-    }
-    .explode-disgusted.effect-laser {
-      animation: explode-disgusted 2.5s forwards, laser 2.5s forwards;
-    }
+       
     .explode-disgusted.effect-burn {
       animation: explode-disgusted 2.5s forwards, burn 2.5s forwards;
-    }
-    .explode-disgusted.effect-glitch {
-      animation: explode-disgusted 2.5s forwards, glitch 2.5s forwards;
     }
 
     .flash.sad { background: radial-gradient(#66ccff, rgba(102,204,255,0)); animation: flashEffect 0.4s ease-in-out; }
@@ -353,9 +317,14 @@
         case 'scared': message = '😰 Ты посмотрел страху в глаза и стер его.'; break;
         case 'disgusted': message = '🧼 Отвращение устранено. Чистота восстановлена.'; break;
       }
+      let effect = '';
+      switch (emotion) {
+        case 'sad': effect = 'effect-blackhole'; break;
+        case 'angry': effect = 'effect-laser'; break;
+        case 'scared': effect = 'effect-glitch'; break;
+        case 'disgusted': effect = 'effect-burn'; break;
+      }
 
-      const effectClasses = ['effect-blackhole', 'effect-laser', 'effect-burn', 'effect-glitch'];
-      const randomEffect = effectClasses[Math.floor(Math.random() * effectClasses.length)];
 
     
       let el;
@@ -375,7 +344,7 @@
           const img = document.createElement('img');
           img.src = e.target.result;
           img.style.maxWidth = '300px';
-          img.classList.add(`explode-${emotion}`, randomEffect);
+          img.classList.add(`explode-${emotion}`, effect);
           output.appendChild(img);
     
           // Очистка всех полей, включая замену input
@@ -399,7 +368,7 @@
         return;
       }
     
-      el.classList.add(`explode-${emotion}`, randomEffect);
+      el.classList.add(`explode-${emotion}`, effect);
       output.appendChild(el);
     
       // Очистка полей
