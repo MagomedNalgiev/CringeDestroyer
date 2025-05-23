@@ -91,28 +91,46 @@
     .flash.angry { background: radial-gradient(#ff3300, rgba(255,51,0,0)); animation: flashEffect 0.4s ease-in-out; }
     .flash.scared { background: radial-gradient(#cc66ff, rgba(204,102,255,0)); animation: flashEffect 0.4s ease-in-out; }
     .flash.disgusted { background: radial-gradient(#66ff66, rgba(102,255,102,0)); animation: flashEffect 0.4s ease-in-out; }
-    @keyframes explode-sad {
-      0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
-      50% { transform: translateY(30px) scale(0.8); opacity: 0.5; filter: blur(2px); }
-      100% { transform: translateY(100px) scale(0.5); opacity: 0; filter: blur(5px); }
+    .final-flash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      opacity: 0;
+      animation: finalFlashAnim 0.6s ease-in-out forwards;
+      z-index: 9999;
     }
-    @keyframes explode-angry {
-      0% { transform: scale(1); opacity: 1; filter: brightness(1); }
-      30% { transform: scale(1.5) rotate(10deg); filter: brightness(3) drop-shadow(0 0 10px red); }
-      70% { transform: scale(1.2) rotate(-10deg); }
-      100% { transform: scale(0); opacity: 0; filter: brightness(0); }
+    #nuke-button-wrapper {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
     }
-    @keyframes explode-scared {
-      0% { transform: scale(1); opacity: 1; }
-      25% { transform: scale(1.2) translateX(-40px); }
-      50% { transform: scale(1.5) translateX(40px); }
-      75% { transform: scale(0.8) translateX(-20px); }
-      100% { transform: scale(0); opacity: 0; }
+    #nuke-button, #confirm-nuke-button {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: red;
+      color: white;
+      font-weight: bold;
+      border: 3px solid white;
+      font-size: 1.5rem;
     }
-    @keyframes explode-disgusted {
-      0% { transform: rotate(0deg) scale(1); filter: hue-rotate(0deg); opacity: 1; }
-      50% { transform: rotate(180deg) scale(1.3); filter: hue-rotate(90deg) saturate(2); }
-      100% { transform: rotate(720deg) scale(0); filter: hue-rotate(180deg); opacity: 0; }
+    #confirm-nuke-button {
+      border-radius: 8px;
+      width: auto;
+      height: auto;
+      padding: 1rem 1.5rem;
+      background: black;
+      color: lime;
+      font-size: 1rem;
+      display: none;
+      margin-top: 0.5rem;
     }
     @keyframes shake {
       0%, 100% { transform: translate(0, 0); }
@@ -128,6 +146,11 @@
     }
     @keyframes flashEffect {
       0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes finalFlashAnim {
+      0% { opacity: 0; }
+      30% { opacity: 1; }
       100% { opacity: 0; }
     }
   </style>
@@ -146,8 +169,25 @@
   <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
   <div id="output"></div>
   <div id="flashContainer"></div>
+  <div id="nuke-button-wrapper">
+    <button id="nuke-button" onclick="revealConfirmButton()">💣</button>
+    <button id="confirm-nuke-button" onclick="destroyEverything()">УНИЧТОЖИТЬ ВСЁ</button>
+  </div>
   <audio id="boomSound" src="boom.mp3" preload="auto"></audio>
   <script>
+    function triggerFlash(emotion, times = 3, interval = 300) {
+      let count = 0;
+      const flashContainer = document.getElementById('flashContainer');
+      const intervalId = setInterval(() => {
+        const flash = document.createElement('div');
+        flash.classList.add('flash', emotion);
+        flashContainer.appendChild(flash);
+        setTimeout(() => flash.remove(), 400);
+        count++;
+        if (count >= times) clearInterval(intervalId);
+      }, interval);
+    }
+
     function destroyCringe() {
       const textArea = document.getElementById('cringeText');
       const linkInput = document.getElementById('cringeLink');
@@ -157,36 +197,23 @@
       const sound = document.getElementById('boomSound');
       output.innerHTML = '';
       output.style.opacity = 0;
-
       const text = textArea.value;
       const link = linkInput.value;
       const hasImage = imageInput.files.length > 0;
-
       if (!text && !link && !hasImage) {
         alert('Вставь что-нибудь кринжовое сначала!');
         return;
       }
-
       triggerFlash(emotion);
       sound.currentTime = 0;
       sound.play();
-
       let message = '';
       switch (emotion) {
-        case 'sad':
-          message = '💔 Кринж разорвал душу, но ты справился.';
-          break;
-        case 'angry':
-          message = '🔥 Злость выплеснута. Кринж уничтожен.';
-          break;
-        case 'scared':
-          message = '😰 Ты посмотрел страху в глаза и стер его.';
-          break;
-        case 'disgusted':
-          message = '🧼 Отвращение устранено. Чистота восстановлена.';
-          break;
+        case 'sad': message = '💔 Кринж разорвал душу, но ты справился.'; break;
+        case 'angry': message = '🔥 Злость выплеснута. Кринж уничтожен.'; break;
+        case 'scared': message = '😰 Ты посмотрел страху в глаза и стер его.'; break;
+        case 'disgusted': message = '🧼 Отвращение устранено. Чистота восстановлена.'; break;
       }
-
       if (text) {
         const el = document.createElement('div');
         el.textContent = text;
@@ -211,51 +238,33 @@
         reader.readAsDataURL(imageInput.files[0]);
         return;
       }
-
       textArea.value = '';
       linkInput.value = '';
       imageInput.value = '';
-
-      setTimeout(() => {
-        output.style.opacity = 1;
-      }, 100);
-
+      setTimeout(() => { output.style.opacity = 1; }, 100);
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
       }, 3000);
     }
 
-    function triggerFlash(emotion, times = 3, interval = 300) {
-      let count = 0;
-      const flashContainer = document.getElementById('flashContainer');
-
-      const intervalId = setInterval(() => {
-        const flash = document.createElement('div');
-        flash.classList.add('flash', emotion);
-        flashContainer.appendChild(flash);
-        setTimeout(() => flash.remove(), 400);
-
-        count++;
-        if (count >= times) {
-          clearInterval(intervalId);
-        }
-      }, interval);
+    function revealConfirmButton() {
+      document.getElementById('nuke-button').style.display = 'none';
+      document.getElementById('confirm-nuke-button').style.display = 'block';
     }
+
     function destroyEverything() {
       const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
       elements.forEach(el => {
-        el.classList.add('destroy-all');
+        el.classList.add('explode-angry');
         if (el.tagName !== 'H1') el.disabled = true;
       });
       document.body.style.background = '#000';
       document.getElementById('boomSound').play();
-
       setTimeout(() => {
         const flash = document.createElement('div');
         flash.classList.add('final-flash');
         document.body.appendChild(flash);
       }, 2000);
-
       setTimeout(() => {
         document.getElementById('output').innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">💣 Всё очищено. Наступила тишина.</p>';
       }, 2600);
@@ -263,6 +272,3 @@
   </script>
 </body>
 </html>
-
-
-
