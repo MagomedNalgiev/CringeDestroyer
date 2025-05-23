@@ -235,26 +235,30 @@
       80% { transform: translateY(5px) skewY(-10deg); }
       100% { transform: none; opacity: 0; }
     }
+    
     @keyframes suck-into-blackhole {
       0% {
-        transform: scale(1) translate(0, 0) rotate(0deg);
+        transform: translate(0, 0) scale(1) rotate(0deg);
         opacity: 1;
       }
       50% {
-        transform: scale(0.5) translate(0, -50px) rotate(180deg);
+        transform: translate(calc(50vw - 50%), calc(50vh - 50%)) scale(0.5) rotate(180deg);
         opacity: 0.7;
         filter: blur(2px);
       }
       100% {
-        transform: scale(0) translate(0, 0) rotate(720deg);
+        transform: translate(calc(50vw - 50%), calc(50vh - 50%)) scale(0) rotate(720deg);
         opacity: 0;
         filter: blur(6px);
       }
     }
     
     .sucked-in {
-      animation: suck-into-blackhole 2s forwards ease-in-out;
+      position: relative;
+      z-index: 10;
+      animation: suck-into-blackhole 2.2s forwards ease-in-out;
     }
+
     
     #blackhole {
       position: fixed;
@@ -268,7 +272,7 @@
       background: radial-gradient(circle, black 0%, #00000088 60%, transparent 80%);
       box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.5);
       z-index: 9999;
-      animation: pulseBlackhole 2s ease-in-out infinite;
+      animation: pulseBlackhole 3s ease-in-out infinite;
     }
     
     @keyframes pulseBlackhole {
