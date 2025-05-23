@@ -287,6 +287,7 @@
       linkInput.value = '';
       const oldInput = document.getElementById('cringeImage');
       const newInput = oldInput.cloneNode(true);
+      newInput.id = 'cringeImage';
       oldInput.parentNode.replaceChild(newInput, oldInput);
       setTimeout(() => { output.style.opacity = 1; }, 100);
       setTimeout(() => {
