@@ -501,6 +501,10 @@
       });
     
       let captured = 0;
+    
+      // ВАЖНО: вызываем callback сразу, чтобы не задерживать анимацию
+      if (typeof callback === 'function') callback();
+    
       const captureFrame = () => {
         html2canvas(document.body).then(canvas => {
           gif.addFrame(canvas, { delay: interval });
@@ -514,7 +518,6 @@
               a.href = url;
               a.download = "cringe_destruction.gif";
               a.click();
-              if (typeof callback === 'function') callback(); // 🔧 вызов логики после записи
             });
             gif.render();
           }
