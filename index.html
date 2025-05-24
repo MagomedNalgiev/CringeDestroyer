@@ -484,8 +484,12 @@
 
 
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.min.js"></script>
+  <script>
+    GIF = window.GIF;
+    GIF.prototype.workerScript = "https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js";
+  </script>
+
   
   <script>
   function startRecording(callback) {
