@@ -303,9 +303,11 @@
 
     function destroyCringe() {
       const shouldRecord = document.getElementById('recordToggle')?.checked;
+    
       if (shouldRecord) {
         try {
-          startRecording(() => performCringeDestruction());
+          performCringeDestruction(); // сначала запускаем анимацию
+          startRecording();           // потом начинаем записывать
         } catch (e) {
           console.warn("Ошибка записи гифки:", e);
           performCringeDestruction();
@@ -314,6 +316,7 @@
         performCringeDestruction();
       }
     }
+
 
     
     function performCringeDestruction() {
@@ -425,9 +428,11 @@
 
     function destroyEverything() {
       const shouldRecord = document.getElementById('recordToggle')?.checked;
+    
       if (shouldRecord) {
         try {
-          startRecording(() => performTotalDestruction());
+          performTotalDestruction();
+          startRecording();
         } catch (e) {
           console.warn("Ошибка записи гифки:", e);
           performTotalDestruction();
@@ -436,6 +441,7 @@
         performTotalDestruction();
       }
     }
+
 
     
     function performTotalDestruction() {
@@ -494,9 +500,10 @@
   
   <script>
   function startRecording(callback) {
-    const duration = 2200;         // Длительность записи
-    const interval = 200;          // Интервал между кадрами
-    const totalFrames = Math.floor(duration / interval);
+    const duration = 3500;  // увеличить до 3.5 сек
+    const interval = 200;
+    const totalFrames = Math.floor(duration / interval); // 17–18 кадров
+
   
     const gif = new GIF({
       workers: 2,
