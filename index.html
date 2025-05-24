@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cringe Destroyer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -500,7 +502,8 @@
       workers: 2,
       quality: 10,
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
+      workerScript: 'https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.worker.js' // добавлено!
     });
   
     gif.on('error', function(err) {
