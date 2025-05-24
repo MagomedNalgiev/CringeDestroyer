@@ -565,6 +565,78 @@
   
     captureFrame();
   }
+    function startRecording(callback) {
+      const duration = 3500;
+      const interval = 200;
+      const totalFrames = Math.floor(duration / interval);
+    
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+    
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width: width,
+        height: height,
+        workerScript: './gif.worker.js'
+      });
+    
+      gif.on('error', function(err) {
+        console.error("Ошибка при создании GIF:", err);
+        if (typeof callback === 'function') callback();
+      });
+    
+      gif.on('finished', function(blob) {
+        if (!blob) {
+          console.warn("GIF не был создан (пустой blob).");
+          if (typeof callback === 'function') callback();
+          return;
+        }
+    
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "cringe_destruction.gif";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    
+        if (typeof callback === 'function') callback();
+      });
+    
+      let captured = 0;
+    
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'visible'; // временно разрешаем прокрутку
+    
+      const captureFrame = () => {
+        html2canvas(document.body, {
+          useCORS: true,
+          width: width,
+          height: height,
+          windowWidth: width,
+          windowHeight: height
+        }).then(canvas => {
+          gif.addFrame(canvas, { delay: interval });
+          captured++;
+          console.log(`Сделан кадр ${captured}/${totalFrames}`);
+          if (captured < totalFrames) {
+            setTimeout(captureFrame, interval);
+          } else {
+            document.body.style.overflow = originalOverflow; // возвращаем как было
+            console.log("Формирование GIF...");
+            gif.render();
+          }
+        }).catch(err => {
+          document.body.style.overflow = originalOverflow;
+          console.error("Ошибка html2canvas:", err);
+          if (typeof callback === 'function') callback();
+        });
+      };
+    
+      captureFrame();
+    }
+
     
     
 
