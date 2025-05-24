@@ -503,13 +503,14 @@
     const duration = 3500;  // увеличить до 3.5 сек
     const interval = 200;
     const totalFrames = Math.floor(duration / interval); // 17–18 кадров
-
-  
+    const width = document.documentElement.scrollWidth;
+    const height = document.documentElement.scrollHeight;
+    
     const gif = new GIF({
       workers: 2,
       quality: 10,
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: width,
+      height: height,
       workerScript: './gif.worker.js' // добавлено!
     });
   
@@ -538,7 +539,15 @@
   
     let captured = 0;
     const captureFrame = () => {
-      html2canvas(document.body).then(canvas => {
+      html2canvas(document.body, {
+        useCORS: true,
+        width: width,
+        height: height,
+        windowWidth: width,
+        windowHeight: height,
+        scrollX: 0,
+        scrollY: 0
+      }).then(canvas => {
         gif.addFrame(canvas, { delay: interval });
         captured++;
         console.log(`Сделан кадр ${captured}/${totalFrames}`);
