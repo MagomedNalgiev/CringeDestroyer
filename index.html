@@ -558,13 +558,19 @@
       let captured = 0;
       
       function captureFrame() {
-        html2canvas(document.documentElement, {
-          useCORS     : true,
-          windowWidth : width,
-          windowHeight: height,
-          scrollX     : 0,
-          scrollY     : 0
+
+          html2canvas(document.documentElement, {
+            useCORS     : true,
+            width       : width,
+            height      : height,
+            windowWidth : width,
+            windowHeight: height,
+            x           : 0,
+            y           : 0,
+            scrollX     : 0,
+            scrollY     : 0
         }).then(canvas => {
+              
           gif.addFrame(canvas, { delay: interval });
           captured++;
           if (captured < totalFrames) {
