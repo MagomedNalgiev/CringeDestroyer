@@ -254,6 +254,17 @@
       z-index: 9999;
       animation: pulseBlackhole 3s ease-in-out infinite;
     }
+    #screenshot-area {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1; /* под всем */
+      pointer-events: none;
+      background: #121212; /* подложка, если нужно */
+    }
+
 
     @keyframes pulseBlackhole {
       0%, 100% { transform: scale(1); opacity: 1; }
@@ -265,6 +276,7 @@
   </style>
 </head>
 <body>
+  <div id="screenshot-area"></div>
   <h1 id="pageTitle">Уничтожь Кринж</h1>
   <textarea id="cringeText" placeholder="Вставь сюда кринжовый текст..." rows="4"></textarea>
   <input type="url" id="cringeLink" placeholder="...или вставь ссылку">
@@ -505,14 +517,13 @@
       const interval = 200;
       const totalFrames = Math.floor(duration / interval);
     
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      const area = document.documentElement; // гарантированно весь вьюпорт
     
       const gif = new GIF({
         workers: 2,
         quality: 10,
-        width: width,
-        height: height,
+        width: window.innerWidth,
+        height: window.innerHeight,
         workerScript: './gif.worker.js'
       });
     
@@ -522,12 +533,6 @@
       });
     
       gif.on('finished', function(blob) {
-        if (!blob) {
-          console.warn("GIF не был создан (пустой blob).");
-          if (typeof callback === 'function') callback();
-          return;
-        }
-    
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -535,22 +540,18 @@
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-    
         if (typeof callback === 'function') callback();
       });
     
       let captured = 0;
     
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'visible'; // временно разрешаем прокрутку
-    
       const captureFrame = () => {
-        html2canvas(document.body, {
+        html2canvas(area, {
           useCORS: true,
-          width: width,
-          height: height,
-          windowWidth: width,
-          windowHeight: height
+          windowWidth: window.innerWidth,
+          windowHeight: window.innerHeight,
+          scrollX: 0,
+          scrollY: 0
         }).then(canvas => {
           gif.addFrame(canvas, { delay: interval });
           captured++;
@@ -558,12 +559,10 @@
           if (captured < totalFrames) {
             setTimeout(captureFrame, interval);
           } else {
-            document.body.style.overflow = originalOverflow; // возвращаем как было
             console.log("Формирование GIF...");
             gif.render();
           }
         }).catch(err => {
-          document.body.style.overflow = originalOverflow;
           console.error("Ошибка html2canvas:", err);
           if (typeof callback === 'function') callback();
         });
@@ -571,6 +570,7 @@
     
       captureFrame();
     }
+
 
   </script>
 
