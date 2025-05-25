@@ -272,6 +272,20 @@
       pointer-events: none;
       background: #121212; /* подложка, если нужно */
     }
+    #capture-area {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      box-sizing: border-box; /* чтобы padding не «нарушал» размеры */
+      background: inherit;    /* чтобы фон остался тот же */
+    }
+
 
 
     @keyframes pulseBlackhole {
@@ -285,27 +299,29 @@
 </head>
 <body>
   <div id="screenshot-area"></div>
-  <h1 id="pageTitle">Уничтожь Кринж</h1>
-  <textarea id="cringeText" placeholder="Вставь сюда кринжовый текст..." rows="4"></textarea>
-  <input type="url" id="cringeLink" placeholder="...или вставь ссылку">
-  <input type="file" id="cringeImage" accept="image/*">
-  <select id="emotion">
-    <option value="sad">😢 Грусть</option>
-    <option value="angry">😡 Злость</option>
-    <option value="scared">😨 Страх</option>
-    <option value="disgusted">🤢 Отвращение</option>
-  </select>
-  <label style="margin-bottom: 1rem; display: flex; align-items: center;">
-    <input type="checkbox" id="recordToggle" style="margin-right: 0.5rem;">
-    Задокументировать ликвидацию
-  </label>
-  <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
-  <div id="output"></div>
-  <div id="flashContainer"></div>
-  <div id="nuke-button-wrapper">
-    <button id="nuke-button" onclick="revealConfirmButton()">💣</button>
-    <button id="confirm-nuke-button" onclick="destroyEverything()">УНИЧТОЖИТЬ ВСЁ</button>
-  </div>
+  <div id="capture-area">
+    <h1 id="pageTitle">Уничтожь Кринж</h1>
+    <textarea id="cringeText" placeholder="Вставь сюда кринжовый текст..." rows="4"></textarea>
+    <input type="url" id="cringeLink" placeholder="...или вставь ссылку">
+    <input type="file" id="cringeImage" accept="image/*">
+    <select id="emotion">
+      <option value="sad">😢 Грусть</option>
+      <option value="angry">😡 Злость</option>
+      <option value="scared">😨 Страх</option>
+      <option value="disgusted">🤢 Отвращение</option>
+    </select>
+    <label style="margin-bottom: 1rem; display: flex; align-items: center;">
+      <input type="checkbox" id="recordToggle" style="margin-right: 0.5rem;">
+      Задокументировать ликвидацию
+    </label>
+    <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
+    <div id="output"></div>
+    <div id="flashContainer"></div>
+    <div id="nuke-button-wrapper">
+      <button id="nuke-button" onclick="revealConfirmButton()">💣</button>
+      <button id="confirm-nuke-button" onclick="destroyEverything()">УНИЧТОЖИТЬ ВСЁ</button>
+    </div>
+    </div>
   <audio id="boomSound" src="boom.mp3" preload="auto"></audio>
   <script>
     function triggerFlash(emotion, times = 3, interval = 300) {
@@ -521,22 +537,14 @@
   <script>
 
     function startRecording() {
-  // сохраняем и сбрасываем стили, препятствующие захвату
-      const body = document.body;
-      const html = document.documentElement;
-      const prevBodyOverflow = body.style.overflow;
-      const prevHtmlOverflow = html.style.overflow;
-      body.style.overflow = 'visible';
-      html.style.overflow = 'visible';
-    
-      // размеры вьюпорта
-      const width  = window.innerWidth;
-      const height = window.innerHeight;
-      const duration    = 3500;                 // длительность GIF в мс
-      const interval    = 200;                  // интервал между кадрами в мс
+      const area = document.getElementById('capture-area');
+      // реальные размеры экрана:
+      const width  = area.offsetWidth;
+      const height = area.offsetHeight;
+      const duration    = 3500;                // мс
+      const interval    = 200;                 // мс
       const totalFrames = Math.floor(duration / interval);
     
-      // инициализируем GIF нужного размера
       const gif = new GIF({
         workers     : 2,
         quality     : 10,
@@ -546,15 +554,10 @@
       });
     
       gif.on('finished', function(blob) {
-        // сразу возвращаем прежние стили
-        body.style.overflow = prevBodyOverflow;
-        html.style.overflow = prevHtmlOverflow;
-    
-        // скачиваем готовый GIF
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = "cringe_destruction.gif";
+        const a   = document.createElement('a');
+        a.href    = url;
+        a.download= "cringe_destruction.gif";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -562,16 +565,16 @@
     
       let captured = 0;
       function captureFrame() {
-        html2canvas(document.body, {
+        html2canvas(area, {
           useCORS     : true,
           width       : width,
           height      : height,
           windowWidth : width,
           windowHeight: height,
-          scrollX     : 0,
-          scrollY     : 0,
           x           : 0,
-          y           : 0
+          y           : 0,
+          scrollX     : 0,
+          scrollY     : 0
         }).then(canvas => {
           gif.addFrame(canvas, { delay: interval });
           captured++;
@@ -582,16 +585,11 @@
           }
         }).catch(err => {
           console.error("Ошибка html2canvas:", err);
-          // даже при ошибке возвращаем стили
-          body.style.overflow = prevBodyOverflow;
-          html.style.overflow = prevHtmlOverflow;
         });
       }
     
-      // старт
       captureFrame();
     }
-
 
 
 
