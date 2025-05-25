@@ -521,56 +521,61 @@
   <script>
 
     function startRecording() {
-      const duration    = 3500;                 // длительность GIF в мс
-      const interval    = 200;                  // интервал между кадрами
+      const body = document.body;
+      const html = document.documentElement;
+    
+      // Сохраняем прежние стили
+      const prevBodyPadding = body.style.padding;
+      const prevBodyOverflow = body.style.overflow;
+      const prevHtmlOverflow = html.style.overflow;
+    
+      // Убираем паддинги и разблокируем overflow
+      body.style.padding = '0';
+      body.style.overflow = 'visible';
+      html.style.overflow = 'visible';
+    
+      // Настоящие размеры всего документа
+      const width  = html.scrollWidth;
+      const height = html.scrollHeight;
+      const duration = 3500;
+      const interval = 200;
       const totalFrames = Math.floor(duration / interval);
-      
-      // размеры всего вьюпорта
-      const width  = window.innerWidth;
-      const height = window.innerHeight;
-      
+    
+      // Инициализируем GIF нужного размера
       const gif = new GIF({
         workers     : 2,
         quality     : 10,
         width       : width,
         height      : height,
-        workerScript: './gif.worker.js'         // путь к вашему файлу gif.worker.js
+        workerScript: './gif.worker.js'
       });
-      
-      gif.on('error', function(err) {
-        console.error("Ошибка при создании GIF:", err);
-      });
-      
+    
       gif.on('finished', function(blob) {
-        if (!blob) {
-          console.warn("Пустой blob — GIF не создан.");
-          return;
-        }
+        // Восстанавливаем стили сразу после того, как GIF сгенерирован
+        body.style.padding = prevBodyPadding;
+        body.style.overflow = prevBodyOverflow;
+        html.style.overflow = prevHtmlOverflow;
+    
         const url = URL.createObjectURL(blob);
-        const a   = document.createElement('a');
-        a.href    = url;
-        a.download= "cringe_destruction.gif";
-        document.body.appendChild(a);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "cringe_destruction.gif";
         a.click();
-        document.body.removeChild(a);
       });
-      
+    
       let captured = 0;
-      
       function captureFrame() {
-
-          html2canvas(document.documentElement, {
-            useCORS     : true,
-            width       : width,
-            height      : height,
-            windowWidth : width,
-            windowHeight: height,
-            x           : 0,
-            y           : 0,
-            scrollX     : 0,
-            scrollY     : 0
+        html2canvas(html, {
+          useCORS     : true,
+          width       : width,
+          height      : height,
+          windowWidth : width,
+          windowHeight: height,
+          x           : 0,
+          y           : 0,
+          scrollX     : 0,
+          scrollY     : 0
         }).then(canvas => {
-              
           gif.addFrame(canvas, { delay: interval });
           captured++;
           if (captured < totalFrames) {
@@ -580,11 +585,16 @@
           }
         }).catch(err => {
           console.error("Ошибка html2canvas:", err);
+          // В любом случае возвращаем стили
+          body.style.padding = prevBodyPadding;
+          body.style.overflow = prevBodyOverflow;
+          html.style.overflow = prevHtmlOverflow;
         });
       }
-      
+    
       captureFrame();
     }
+
 
 
 
