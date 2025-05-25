@@ -537,12 +537,12 @@
   <script>
 
     function startRecording() {
-      const area = document.getElementById('capture-area');
-      // реальные размеры экрана:
-      const width  = area.offsetWidth;
-      const height = area.offsetHeight;
-      const duration    = 3500;                // мс
-      const interval    = 200;                 // мс
+      const html = document.documentElement;
+      // реальные размеры всего документа (не только вьюпорта)
+      const width  = html.scrollWidth;
+      const height = html.scrollHeight;
+      const duration    = 3500;                 // длительность GIF в мс
+      const interval    = 200;                  // интервал между кадрами
       const totalFrames = Math.floor(duration / interval);
     
       const gif = new GIF({
@@ -550,7 +550,7 @@
         quality     : 10,
         width       : width,
         height      : height,
-        workerScript: './gif.worker.js'
+        workerScript: './gif.worker.js'        // путь к вашему gif.worker.js
       });
     
       gif.on('finished', function(blob) {
@@ -565,18 +565,16 @@
     
       let captured = 0;
       function captureFrame() {
-        html2canvas(area, {
+        html2canvas(html, {
           useCORS     : true,
           width       : width,
           height      : height,
           windowWidth : width,
           windowHeight: height,
-          x           : 0,
-          y           : 0,
           scrollX     : 0,
           scrollY     : 0
         }).then(canvas => {
-          gif.addFrame(canvas, { delay: interval });
+          gif.addFrame(canvas, { delay: interval, copy: true });
           captured++;
           if (captured < totalFrames) {
             setTimeout(captureFrame, interval);
@@ -585,6 +583,8 @@
           }
         }).catch(err => {
           console.error("Ошибка html2canvas:", err);
+          // при ошибке всё равно пытаемся отрендерить то, что есть
+          gif.render();
         });
       }
     
