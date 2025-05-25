@@ -7,12 +7,7 @@
   <title>Cringe Destroyer</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
+
 
     body {
       font-family: Arial, sans-serif;
@@ -22,10 +17,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
       margin: 0;
       padding: 2rem;
-      overflow: hidden;
     }
     h1 {
       font-size: 2.5rem;
@@ -273,10 +266,6 @@
       background: #121212; /* подложка, если нужно */
     }
     #capture-area {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -538,22 +527,43 @@
 
     function startRecording() {
       const html = document.documentElement;
-      // реальные размеры всего документа (не только вьюпорта)
+      const body = document.body;
+  
+      // 1) Сохраняем старые стили
+      const prevHtmlOverflow  = html.style.overflow;
+      const prevHtmlHeight    = html.style.height;
+      const prevBodyOverflow  = body.style.overflow;
+      const prevBodyHeight    = body.style.height;
+  
+      // 2) Отключаем любые «обрезания»
+      html.style.overflow = 'visible';
+      html.style.height   = 'auto';
+      body.style.overflow = 'visible';
+      body.style.height   = 'auto';
+  
+      // 3) Считаем реальные размеры всего документа
       const width  = html.scrollWidth;
       const height = html.scrollHeight;
-      const duration    = 3500;                 // длительность GIF в мс
-      const interval    = 200;                  // интервал между кадрами
-      const totalFrames = Math.floor(duration / interval);
-    
+  
+      // 4) Инициализируем GIF
+      const duration    = 3500;
+      const interval    = 200;
+      const totalFrames = Math.floor(duration/interval);
       const gif = new GIF({
         workers     : 2,
         quality     : 10,
         width       : width,
         height      : height,
-        workerScript: './gif.worker.js'        // путь к вашему gif.worker.js
+        workerScript: './gif.worker.js'
       });
-    
-      gif.on('finished', function(blob) {
+  
+      gif.on('finished', blob => {
+        // сразу восстанавливаем стили
+        html.style.overflow = prevHtmlOverflow;
+        html.style.height   = prevHtmlHeight;
+        body.style.overflow = prevBodyOverflow;
+        body.style.height   = prevBodyHeight;
+  
         const url = URL.createObjectURL(blob);
         const a   = document.createElement('a');
         a.href    = url;
@@ -562,7 +572,7 @@
         a.click();
         document.body.removeChild(a);
       });
-    
+  
       let captured = 0;
       function captureFrame() {
         html2canvas(html, {
@@ -582,12 +592,13 @@
             gif.render();
           }
         }).catch(err => {
-          console.error("Ошибка html2canvas:", err);
-          // при ошибке всё равно пытаемся отрендерить то, что есть
+          console.error("html2canvas failed:", err);
+          // даже при ошибке рендерим то, что успели захватить
           gif.render();
         });
       }
-    
+  
+      // стартуем
       captureFrame();
     }
 
