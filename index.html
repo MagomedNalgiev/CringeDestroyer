@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cringe Destroyer</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-
-
     body {
       font-family: Arial, sans-serif;
       background: #121212;
@@ -17,14 +13,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      height: 100vh;
       margin: 0;
       padding: 2rem;
+      overflow: hidden;
     }
     h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
     }
-    
     textarea, input[type="url"], select, input[type="file"] {
       width: 100%;
       max-width: 500px;
@@ -81,34 +78,34 @@
     .destroy-all {
       animation: destroy-all 5s forwards;
     }
-
+    
     .explode-sad {
       animation: explode-sad 2.5s forwards, shake 1.5s ease-in-out;
     }
-
+    
     .explode-angry {
       animation: explode-angry 2.5s forwards, shake 1.5s ease-in-out;
     }
-
+    
     .explode-scared {
       animation: explode-scared 2.5s forwards, shake 1.5s ease-in-out;
     }
-
+    
     .explode-disgusted {
       animation: explode-disgusted 2.5s forwards, shake 1.5s ease-in-out;
     }
     .explode-sad.effect-blackhole {
       animation: explode-sad 2.5s forwards, blackhole 2.5s forwards;
     }
-
+    
     .explode-angry.effect-laser {
       animation: explode-angry 2.5s forwards, laser 2.5s forwards;
     }
-
+      
     .explode-scared.effect-glitch {
       animation: explode-scared 2.5s forwards, glitch 2.5s forwards;
     }
-
+       
     .explode-disgusted.effect-burn {
       animation: explode-disgusted 2.5s forwards, burn 2.5s forwards;
     }
@@ -158,7 +155,7 @@
       display: none;
       margin-top: 0.5rem;
     }
-
+    
     @keyframes shake {
       0%, 100% { transform: translate(0, 0); }
       10% { transform: translate(-10px, 10px); }
@@ -185,20 +182,20 @@
       50% { transform: scale(2); filter: grayscale(1); }
       100% { transform: scale(0); opacity: 0; filter: grayscale(1); }
     }
-
+    
     @keyframes explode-sad {
       0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
       50% { transform: translateY(30px) scale(0.8); opacity: 0.5; filter: blur(2px); }
       100% { transform: translateY(100px) scale(0.5); opacity: 0; filter: blur(5px); }
     }
-
+    
     @keyframes explode-angry {
       0% { transform: scale(1); opacity: 1; filter: brightness(1); }
       30% { transform: scale(1.5) rotate(10deg); filter: brightness(3) drop-shadow(0 0 10px red); }
       70% { transform: scale(1.2) rotate(-10deg); }
       100% { transform: scale(0); opacity: 0; filter: brightness(0); }
     }
-
+    
     @keyframes explode-scared {
       0% { transform: scale(1); opacity: 1; }
       25% { transform: scale(1.2) translateX(-40px); }
@@ -206,7 +203,7 @@
       75% { transform: scale(0.8) translateX(-20px); }
       100% { transform: scale(0); opacity: 0; }
     }
-
+    
     @keyframes explode-disgusted {
       0% { transform: rotate(0deg) scale(1); filter: hue-rotate(0deg); opacity: 1; }
       50% { transform: rotate(180deg) scale(1.3); filter: hue-rotate(90deg) saturate(2); }
@@ -217,19 +214,19 @@
       50% { transform: scale(0.5) rotate(180deg); opacity: 0.7; filter: blur(2px); }
       100% { transform: scale(0) rotate(720deg); opacity: 0; filter: blur(5px); }
     }
-
+    
     @keyframes laser {
       0% { transform: scaleY(1); opacity: 1; filter: brightness(2); }
       50% { transform: scaleY(0.3) skewY(10deg); opacity: 0.7; }
       100% { transform: scaleY(0) skewY(30deg); opacity: 0; filter: brightness(0); }
     }
-
+    
     @keyframes burn {
       0% { filter: brightness(1) grayscale(0); opacity: 1; }
       50% { filter: brightness(0.4) grayscale(0.5); opacity: 0.5; }
       100% { filter: brightness(0) grayscale(1); opacity: 0; }
     }
-
+    
     @keyframes glitch {
       0% { transform: none; opacity: 1; }
       20% { transform: skewX(20deg) translateX(-5px); }
@@ -238,9 +235,9 @@
       80% { transform: translateY(5px) skewY(-10deg); }
       100% { transform: none; opacity: 0; }
     }
+    
 
-
-
+    
     #blackhole {
       position: fixed;
       top: 50%;
@@ -255,62 +252,34 @@
       z-index: 9999;
       animation: pulseBlackhole 3s ease-in-out infinite;
     }
-    #screenshot-area {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1; /* под всем */
-      pointer-events: none;
-      background: #121212; /* подложка, если нужно */
-    }
-    #capture-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      box-sizing: border-box; /* чтобы padding не «нарушал» размеры */
-      background: inherit;    /* чтобы фон остался тот же */
-    }
-
-
-
+    
     @keyframes pulseBlackhole {
       0%, 100% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.2); opacity: 0.6; }
     }
 
-
+    
 
   </style>
 </head>
 <body>
-  <div id="screenshot-area"></div>
-  <div id="capture-area">
-    <h1 id="pageTitle">Уничтожь Кринж</h1>
-    <textarea id="cringeText" placeholder="Вставь сюда кринжовый текст..." rows="4"></textarea>
-    <input type="url" id="cringeLink" placeholder="...или вставь ссылку">
-    <input type="file" id="cringeImage" accept="image/*">
-    <select id="emotion">
-      <option value="sad">😢 Грусть</option>
-      <option value="angry">😡 Злость</option>
-      <option value="scared">😨 Страх</option>
-      <option value="disgusted">🤢 Отвращение</option>
-    </select>
-    <label style="margin-bottom: 1rem; display: flex; align-items: center;">
-      <input type="checkbox" id="recordToggle" style="margin-right: 0.5rem;">
-      Задокументировать ликвидацию
-    </label>
-    <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
-    <div id="output"></div>
-    <div id="flashContainer"></div>
-    <div id="nuke-button-wrapper">
-      <button id="nuke-button" onclick="revealConfirmButton()">💣</button>
-      <button id="confirm-nuke-button" onclick="destroyEverything()">УНИЧТОЖИТЬ ВСЁ</button>
-    </div>
-    </div>
+  <h1 id="pageTitle">Уничтожь Кринж</h1>
+  <textarea id="cringeText" placeholder="Вставь сюда кринжовый текст..." rows="4"></textarea>
+  <input type="url" id="cringeLink" placeholder="...или вставь ссылку">
+  <input type="file" id="cringeImage" accept="image/*">
+  <select id="emotion">
+    <option value="sad">😢 Грусть</option>
+    <option value="angry">😡 Злость</option>
+    <option value="scared">😨 Страх</option>
+    <option value="disgusted">🤢 Отвращение</option>
+  </select>
+  <button onclick="destroyCringe()">АННИГИЛИРОВАТЬ</button>
+  <div id="output"></div>
+  <div id="flashContainer"></div>
+  <div id="nuke-button-wrapper">
+    <button id="nuke-button" onclick="revealConfirmButton()">💣</button>
+    <button id="confirm-nuke-button" onclick="destroyEverything()">УНИЧТОЖИТЬ ВСЁ</button>
+  </div>
   <audio id="boomSound" src="boom.mp3" preload="auto"></audio>
   <script>
     function triggerFlash(emotion, times = 3, interval = 300) {
@@ -327,46 +296,28 @@
     }
 
     function destroyCringe() {
-      const shouldRecord = document.getElementById('recordToggle')?.checked;
-
-      if (shouldRecord) {
-        try {
-          performCringeDestruction(); // сначала запускаем анимацию
-          startRecording();           // потом начинаем записывать
-        } catch (e) {
-          console.warn("Ошибка записи гифки:", e);
-          performCringeDestruction();
-        }
-      } else {
-        performCringeDestruction();
-      }
-    }
-
-
-
-    function performCringeDestruction() {
       const textArea = document.getElementById('cringeText');
       const linkInput = document.getElementById('cringeLink');
-      let imageInput = document.getElementById('cringeImage');
+      let imageInput = document.getElementById('cringeImage'); // let — чтобы обновлять
       const emotion = document.getElementById('emotion').value;
       const output = document.getElementById('output');
       const sound = document.getElementById('boomSound');
       output.innerHTML = '';
       output.style.opacity = 0;
-
+    
       const text = textArea.value;
       const link = linkInput.value;
       const hasImage = imageInput.files.length > 0;
-
+    
       if (!text && !link && !hasImage) {
         alert('Вставь что-нибудь кринжовое сначала!');
         return;
       }
-
+    
       triggerFlash(emotion);
       sound.currentTime = 0;
       sound.play();
-
+    
       let message = '';
       switch (emotion) {
         case 'sad': message = '💔 Кринж разорвал душу, но ты справился.'; break;
@@ -374,7 +325,6 @@
         case 'scared': message = '😰 Ты посмотрел страху в глаза и стер его.'; break;
         case 'disgusted': message = '🧼 Отвращение устранено. Чистота восстановлена.'; break;
       }
-
       let effect = '';
       switch (emotion) {
         case 'sad': effect = 'effect-blackhole'; break;
@@ -383,7 +333,10 @@
         case 'disgusted': effect = 'effect-burn'; break;
       }
 
+
+    
       let el;
+    
       if (text) {
         el = document.createElement('div');
         el.textContent = text;
@@ -393,7 +346,7 @@
         el.textContent = link;
         el.target = '_blank';
       } else if (hasImage) {
-        const file = imageInput.files[0];
+        const file = imageInput.files[0]; // сохраняем до замены поля
         const reader = new FileReader();
         reader.onload = function (e) {
           const img = document.createElement('img');
@@ -401,7 +354,8 @@
           img.style.maxWidth = '300px';
           img.classList.add(`explode-${emotion}`, effect);
           output.appendChild(img);
-
+    
+          // Очистка всех полей, включая замену input
           textArea.value = '';
           linkInput.value = '';
           const oldInput = document.getElementById('cringeImage');
@@ -410,7 +364,7 @@
           newInput.name = oldInput.name;
           oldInput.parentNode.replaceChild(newInput, oldInput);
           imageInput = newInput;
-
+    
           setTimeout(() => {
             output.style.opacity = 1;
           }, 100);
@@ -421,12 +375,14 @@
         reader.readAsDataURL(file);
         return;
       }
-
+    
       el.classList.add(`explode-${emotion}`, effect);
       output.appendChild(el);
-
+    
+      // Очистка полей
       textArea.value = '';
       linkInput.value = '';
+      // Сброс поля загрузки файла
       const oldInput = document.getElementById('cringeImage');
       const newInput = document.createElement('input');
       newInput.type = 'file';
@@ -436,175 +392,62 @@
       newInput.className = oldInput.className;
       oldInput.replaceWith(newInput);
 
+    
       setTimeout(() => {
         output.style.opacity = 1;
       }, 100);
       setTimeout(() => {
         output.innerHTML = `<p>✅ ${message}</p>`;
       }, 3000);
+
     }
 
-
-
+    
     function revealConfirmButton() {
       document.getElementById('nuke-button').style.display = 'none';
       document.getElementById('confirm-nuke-button').style.display = 'block';
     }
 
     function destroyEverything() {
-      const shouldRecord = document.getElementById('recordToggle')?.checked;
-
-      if (shouldRecord) {
-        try {
-          performTotalDestruction();
-          startRecording();
-        } catch (e) {
-          console.warn("Ошибка записи гифки:", e);
-          performTotalDestruction();
-        }
-      } else {
-        performTotalDestruction();
-      }
-    }
-
-
-
-    function performTotalDestruction() {
       const blackhole = document.createElement('div');
       blackhole.id = 'blackhole';
       document.body.appendChild(blackhole);
-
+    
       const holeRect = blackhole.getBoundingClientRect();
       const centerX = holeRect.left + holeRect.width / 2;
       const centerY = holeRect.top + holeRect.height / 2;
-
-      const elements = [
-        ...document.querySelectorAll('textarea, input, select, button, #pageTitle, label, #output, #output *')
-      ].filter(el => el.id !== 'nuke-button');
-
-
+    
+      const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
       elements.forEach(el => {
         const rect = el.getBoundingClientRect();
         const dx = centerX - (rect.left + rect.width / 2);
         const dy = centerY - (rect.top + rect.height / 2);
-
+    
         el.style.transition = 'transform 2s ease-in-out, opacity 2s ease-in-out, filter 2s ease-in-out';
         el.style.transform = `translate(${dx}px, ${dy}px) scale(0) rotate(720deg)`;
         el.style.opacity = '0';
         el.style.filter = 'blur(6px)';
         if (el.tagName !== 'H1') el.disabled = true;
       });
-
+    
       document.body.style.background = '#000';
       document.getElementById('boomSound').play();
-
+    
       setTimeout(() => {
         const flash = document.createElement('div');
         flash.classList.add('final-flash');
         document.body.appendChild(flash);
       }, 2000);
-
+    
       setTimeout(() => {
         blackhole.remove();
         const output = document.getElementById('output');
-        output.style.opacity = '1';
-        output.style.transform = 'none';
-        output.style.filter = 'none';
-        output.style.transition = 'none';
+        output.style.opacity = 1;
         output.innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">Всё исчезло в сингулярности... Наступила тишина.</p>';
       }, 2600);
     }
 
 
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js"></script>
-  <script>
-    GIF = window.GIF;
-  </script>
-
-
-  <script>
-
-    function startRecording() {
-      const html = document.documentElement;
-      const body = document.body;
-  
-      // 1) Сохраняем старые стили
-      const prevHtmlOverflow  = html.style.overflow;
-      const prevHtmlHeight    = html.style.height;
-      const prevBodyOverflow  = body.style.overflow;
-      const prevBodyHeight    = body.style.height;
-  
-      // 2) Отключаем любые «обрезания»
-      html.style.overflow = 'visible';
-      html.style.height   = 'auto';
-      body.style.overflow = 'visible';
-      body.style.height   = 'auto';
-  
-      // 3) Считаем реальные размеры всего документа
-      const width  = html.scrollWidth;
-      const height = html.scrollHeight;
-  
-      // 4) Инициализируем GIF
-      const duration    = 3500;
-      const interval    = 200;
-      const totalFrames = Math.floor(duration/interval);
-      const gif = new GIF({
-        workers     : 2,
-        quality     : 10,
-        width       : width,
-        height      : height,
-        workerScript: './gif.worker.js'
-      });
-  
-      gif.on('finished', blob => {
-        // сразу восстанавливаем стили
-        html.style.overflow = prevHtmlOverflow;
-        html.style.height   = prevHtmlHeight;
-        body.style.overflow = prevBodyOverflow;
-        body.style.height   = prevBodyHeight;
-  
-        const url = URL.createObjectURL(blob);
-        const a   = document.createElement('a');
-        a.href    = url;
-        a.download= "cringe_destruction.gif";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      });
-  
-      let captured = 0;
-      function captureFrame() {
-        html2canvas(html, {
-          useCORS     : true,
-          width       : width,
-          height      : height,
-          windowWidth : width,
-          windowHeight: height,
-          scrollX     : 0,
-          scrollY     : 0
-        }).then(canvas => {
-          gif.addFrame(canvas, { delay: interval, copy: true });
-          captured++;
-          if (captured < totalFrames) {
-            setTimeout(captureFrame, interval);
-          } else {
-            gif.render();
-          }
-        }).catch(err => {
-          console.error("html2canvas failed:", err);
-          // даже при ошибке рендерим то, что успели захватить
-          gif.render();
-        });
-      }
-  
-      // стартуем
-      captureFrame();
-    }
-
-
-
-  </script>
-
 </body>
 </html>
