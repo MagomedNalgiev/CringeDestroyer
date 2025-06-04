@@ -350,6 +350,7 @@
         const reader = new FileReader();
         reader.onload = function (e) {
           const img = document.createElement('img');
+          img.alt = "Картинка пользователя";
           img.src = e.target.result;
           img.style.maxWidth = '300px';
           img.classList.add(`explode-${emotion}`, effect);
