@@ -94,6 +94,22 @@
     .explode-disgusted {
       animation: explode-disgusted 2.5s forwards, shake 1.5s ease-in-out;
     }
+    .explode-sad.effect-blackhole {
+      animation: explode-sad 2.5s forwards, blackhole 2.5s forwards;
+    }
+    
+    .explode-angry.effect-laser {
+      animation: explode-angry 2.5s forwards, laser 2.5s forwards;
+    }
+      
+    .explode-scared.effect-glitch {
+      animation: explode-scared 2.5s forwards, glitch 2.5s forwards;
+    }
+       
+    .explode-disgusted.effect-burn {
+      animation: explode-disgusted 2.5s forwards, burn 2.5s forwards;
+    }
+
     .flash.sad { background: radial-gradient(#66ccff, rgba(102,204,255,0)); animation: flashEffect 0.4s ease-in-out; }
     .flash.angry { background: radial-gradient(#ff3300, rgba(255,51,0,0)); animation: flashEffect 0.4s ease-in-out; }
     .flash.scared { background: radial-gradient(#cc66ff, rgba(204,102,255,0)); animation: flashEffect 0.4s ease-in-out; }
@@ -193,6 +209,57 @@
       50% { transform: rotate(180deg) scale(1.3); filter: hue-rotate(90deg) saturate(2); }
       100% { transform: rotate(720deg) scale(0); filter: hue-rotate(180deg); opacity: 0; }
     }
+    @keyframes blackhole {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; }
+      50% { transform: scale(0.5) rotate(180deg); opacity: 0.7; filter: blur(2px); }
+      100% { transform: scale(0) rotate(720deg); opacity: 0; filter: blur(5px); }
+    }
+    
+    @keyframes laser {
+      0% { transform: scaleY(1); opacity: 1; filter: brightness(2); }
+      50% { transform: scaleY(0.3) skewY(10deg); opacity: 0.7; }
+      100% { transform: scaleY(0) skewY(30deg); opacity: 0; filter: brightness(0); }
+    }
+    
+    @keyframes burn {
+      0% { filter: brightness(1) grayscale(0); opacity: 1; }
+      50% { filter: brightness(0.4) grayscale(0.5); opacity: 0.5; }
+      100% { filter: brightness(0) grayscale(1); opacity: 0; }
+    }
+    
+    @keyframes glitch {
+      0% { transform: none; opacity: 1; }
+      20% { transform: skewX(20deg) translateX(-5px); }
+      40% { transform: skewX(-20deg) translateX(5px); opacity: 0.7; }
+      60% { transform: translateY(-5px) skewY(10deg); }
+      80% { transform: translateY(5px) skewY(-10deg); }
+      100% { transform: none; opacity: 0; }
+    }
+    
+
+    
+    #blackhole {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      margin-top: -100px;
+      margin-left: -100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, black 0%, #00000088 60%, transparent 80%);
+      box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      animation: pulseBlackhole 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulseBlackhole {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.6; }
+    }
+
+    
+
   </style>
 </head>
 <body>
@@ -258,6 +325,15 @@
         case 'scared': message = '😰 Ты посмотрел страху в глаза и стер его.'; break;
         case 'disgusted': message = '🧼 Отвращение устранено. Чистота восстановлена.'; break;
       }
+      let effect = '';
+      switch (emotion) {
+        case 'sad': effect = 'effect-blackhole'; break;
+        case 'angry': effect = 'effect-laser'; break;
+        case 'scared': effect = 'effect-glitch'; break;
+        case 'disgusted': effect = 'effect-burn'; break;
+      }
+
+
     
       let el;
     
@@ -276,7 +352,7 @@
           const img = document.createElement('img');
           img.src = e.target.result;
           img.style.maxWidth = '300px';
-          img.classList.add(`explode-${emotion}`);
+          img.classList.add(`explode-${emotion}`, effect);
           output.appendChild(img);
     
           // Очистка всех полей, включая замену input
@@ -300,7 +376,7 @@
         return;
       }
     
-      el.classList.add(`explode-${emotion}`);
+      el.classList.add(`explode-${emotion}`, effect);
       output.appendChild(el);
     
       // Очистка полей
@@ -334,25 +410,44 @@
     }
 
     function destroyEverything() {
+      const blackhole = document.createElement('div');
+      blackhole.id = 'blackhole';
+      document.body.appendChild(blackhole);
+    
+      const holeRect = blackhole.getBoundingClientRect();
+      const centerX = holeRect.left + holeRect.width / 2;
+      const centerY = holeRect.top + holeRect.height / 2;
+    
       const elements = document.querySelectorAll('textarea, input, select, button, #pageTitle');
       elements.forEach(el => {
-        el.classList.add('destroy-all');
+        const rect = el.getBoundingClientRect();
+        const dx = centerX - (rect.left + rect.width / 2);
+        const dy = centerY - (rect.top + rect.height / 2);
+    
+        el.style.transition = 'transform 2s ease-in-out, opacity 2s ease-in-out, filter 2s ease-in-out';
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(0) rotate(720deg)`;
+        el.style.opacity = '0';
+        el.style.filter = 'blur(6px)';
         if (el.tagName !== 'H1') el.disabled = true;
       });
+    
       document.body.style.background = '#000';
       document.getElementById('boomSound').play();
+    
       setTimeout(() => {
         const flash = document.createElement('div');
         flash.classList.add('final-flash');
         document.body.appendChild(flash);
       }, 2000);
+    
       setTimeout(() => {
+        blackhole.remove();
         const output = document.getElementById('output');
         output.style.opacity = 1;
-        output.innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">Всё очищено. Наступила тишина.</p>';
+        output.innerHTML = '<p style="margin-top:2rem;font-size:1.5rem">Всё исчезло в сингулярности... Наступила тишина.</p>';
       }, 2600);
-
     }
+
 
   </script>
 </body>
